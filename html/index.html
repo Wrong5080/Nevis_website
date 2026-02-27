@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<script>
+/* ── Instant theme & lang apply before paint ── */
+(function(){
+  var th = localStorage.getItem('nv_theme');
+  if (!th) th = window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark';
+  if (th === 'light') document.documentElement.classList.add('nv-light-pre');
+  var lg = localStorage.getItem('nv_lang') || 'en';
+  document.documentElement.lang = lg;
+  document.documentElement.dir  = lg === 'ar' ? 'rtl' : 'ltr';
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeViS — Choose Your Experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS — mirrors home.css exactly
+══════════════════════════════════════════════════ */
+:root {
+  --R:#d4001f; --R2:#8a0014; --R3:#4a0009;
+  --Rm:rgba(212,0,31,.18); --Rglow:rgba(212,0,31,.22); --RglowHot:rgba(212,0,31,.48);
+  --gold:#c9a63a; --gold2:#8a6e18;
+  --goldm:rgba(201,166,58,.15); --goldglow:rgba(201,166,58,.28);
+  --bg:#040204; --bg2:#090409; --bg3:#0e060e;
+  --glass:rgba(255,255,255,.035); --glassHi:rgba(255,255,255,.07);
+  --bord:rgba(255,255,255,.065); --bordHot:rgba(212,0,31,.42);
+  --text:#f4eaf4; --textSub:#8a7088; --textMid:#bca8b8;
+  --fD:'Cormorant Garamond',Georgia,serif;
+  --fB:'Outfit',system-ui,sans-serif;
+  --fAr:'Cairo',sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --smooth:cubic-bezier(.22,.9,.36,1);
+}
+body.light {
+  --bg:#f7f3f0; --bg2:#ede7e3; --bg3:#e2d9d4;
+  --glass:rgba(0,0,0,.03); --glassHi:rgba(0,0,0,.06);
+  --bord:rgba(0,0,0,.09); --bordHot:rgba(192,0,28,.35);
+  --text:#140608; --textSub:#7a5560; --textMid:#4a2830;
+  --Rglow:rgba(192,0,28,.18); --RglowHot:rgba(192,0,28,.4);
+  --Rm:rgba(192,0,28,.08); --R:#c00020; --R2:#800016;
+  --gold:#b8880e; --goldm:rgba(184,136,14,.12); --goldglow:rgba(184,136,14,.24);
+}
+html.nv-light-pre { background:#f7f3f0; }
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; }
+body {
+  font-family:var(--fB);
+  background:var(--bg); color:var(--text);
+  min-height:100vh; overflow-x:hidden;
+  cursor:none;
+  -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column;
+  transition:background .45s var(--ease), color .4s var(--ease);
+}
+[dir=rtl],[dir=rtl] * { font-family:var(--fAr) !important; }
+a { color:inherit; text-decoration:none; }
+button { font-family:inherit; border:0; background:none; cursor:none; }
+::selection { background:var(--R); color:#fff; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-thumb { background:var(--R2); border-radius:3px; }
+:focus-visible { outline:2px solid var(--R); outline-offset:3px; border-radius:4px; }
+@media (hover:none),(pointer:coarse) { body,button { cursor:auto !important; } }
+
+/* ── Custom cursor ── */
+#nv-cursor { position:fixed; top:0; left:0; pointer-events:none; z-index:99999; }
+.c-dot {
+  position:fixed; width:10px; height:10px; border-radius:50%;
+  background:var(--R); box-shadow:0 0 14px var(--RglowHot), 0 0 4px var(--R);
+  will-change:transform;
+  transition:width .18s var(--spring),height .18s var(--spring),background .25s;
+}
+.c-ring {
+  position:fixed; width:38px; height:38px; border-radius:50%;
+  border:1.5px solid rgba(212,0,31,.5);
+  will-change:transform;
+  transition:width .25s var(--spring),height .25s var(--spring),opacity .25s,border-color .25s;
+}
+body.ch .c-dot { width:6px; height:6px; background:var(--gold); box-shadow:0 0 12px var(--goldglow); }
+body.ch .c-ring { width:54px; height:54px; border-color:var(--gold); border-width:2px; }
+
+/* ── Background ── */
+.wl-bg {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 110% 65% at 0% 0%,   rgba(212,0,31,.09)  0%, transparent 60%),
+    radial-gradient(ellipse  50% 40% at 100% 100%, rgba(201,166,58,.06) 0%, transparent 55%),
+    radial-gradient(ellipse  60% 40% at 80% 0%,   rgba(138,0,20,.05)  0%, transparent 60%),
+    linear-gradient(158deg, var(--bg) 0%, var(--bg2) 55%, var(--bg3) 100%);
+  transition:background .45s var(--ease);
+}
+body.light .wl-bg {
+  background:
+    radial-gradient(ellipse 100% 60% at 0% 0%, rgba(210,30,50,.07) 0%, transparent 55%),
+    radial-gradient(ellipse  50% 40% at 100% 100%, rgba(184,136,14,.05) 0%, transparent 55%),
+    linear-gradient(155deg, #f7f3f0 0%, #ede7e3 55%, #e2d9d4 100%);
+}
+.wl-grid {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(212,0,31,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,0,31,.018) 1px, transparent 1px);
+  background-size:64px 64px;
+  animation:gridDrift 40s linear infinite;
+}
+body.light .wl-grid {
+  background-image:
+    linear-gradient(rgba(190,0,28,.014) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(190,0,28,.014) 1px, transparent 1px);
+}
+@keyframes gridDrift { to { background-position:64px 64px; } }
+
+/* ── Floating particles ── */
+.wl-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.wl-particle {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation:particleFloat linear infinite;
+  opacity:0;
+}
+@keyframes particleFloat {
+  0%   { opacity:0; transform:translateY(0) scale(.6); }
+  10%  { opacity:1; }
+  90%  { opacity:.4; }
+  100% { opacity:0; transform:translateY(-120vh) scale(1.2); }
+}
+
+/* ── Loader ── */
+#wl-loader {
+  position:fixed; inset:0; z-index:9900; background:var(--bg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+  transition:opacity .6s var(--smooth), visibility .6s;
+}
+#wl-loader.gone { opacity:0; visibility:hidden; pointer-events:none; }
+.wl-ll {
+  font-family:var(--fD); font-size:clamp(2.8rem,5vw,4.5rem); font-weight:700;
+  letter-spacing:18px; text-transform:uppercase;
+  animation:llPulse 1.2s ease-in-out infinite alternate;
+}
+.wl-ll b { color:var(--R); }
+.wl-lt { width:180px; height:1px; background:var(--bord); position:relative; overflow:hidden; }
+.wl-lf {
+  position:absolute; top:0; left:0; height:100%;
+  background:linear-gradient(90deg, var(--R2), var(--R), var(--gold));
+  animation:llFill 1.4s var(--smooth) forwards;
+}
+@keyframes llPulse { from{opacity:.15;letter-spacing:10px} to{opacity:1;letter-spacing:20px} }
+@keyframes llFill  { from{width:0} to{width:100%} }
+
+/* ── Nav ── */
+.wl-nav {
+  position:fixed; top:0; left:0; right:0; height:68px; z-index:800;
+  display:flex; align-items:center; justify-content:space-between; padding:0 52px;
+  background:rgba(4,2,4,.75); backdrop-filter:blur(36px) saturate(200%);
+  border-bottom:1px solid var(--bord);
+  transition:background .4s var(--ease);
+}
+body.light .wl-nav { background:rgba(247,243,240,.92); }
+.wl-nav::after {
+  content:''; position:absolute; bottom:0; left:6%; right:6%; height:1px;
+  background:linear-gradient(90deg, transparent, var(--R), transparent); opacity:.18;
+}
+.wl-logo {
+  font-family:var(--fD); font-size:1.45rem; font-weight:700; letter-spacing:12px;
+  text-transform:uppercase;
+  background:linear-gradient(110deg, var(--text) 20%, var(--R) 40%, var(--text) 56%, var(--gold) 76%, var(--text) 92%);
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:logoShine 9s linear infinite;
+}
+@keyframes logoShine { 0%{background-position:0%} 100%{background-position:300%} }
+
+.wl-nav-btns { display:flex; align-items:center; gap:8px; }
+.wl-nav-btn {
+  height:34px; padding:0 14px; border-radius:20px;
+  border:1px solid var(--bord); color:var(--textSub);
+  font-size:.72rem; font-weight:500; cursor:none;
+  display:inline-flex; align-items:center; gap:7px;
+  transition:all .22s var(--ease);
+  background:transparent;
+}
+.wl-nav-btn i { font-size:.82rem; }
+@media (hover:none),(pointer:coarse) { .wl-nav-btn { cursor:pointer; } }
+.wl-nav-btn:hover { border-color:var(--bordHot); color:var(--R); background:var(--Rm); }
+.wl-nav-btn.spinning i { animation:iconSpin .42s var(--spring) forwards; }
+.wl-nav-btn.pulsing   { animation:btnPulse .32s var(--spring); }
+@keyframes iconSpin  { 0%{transform:rotate(0) scale(1)} 50%{transform:rotate(220deg) scale(.6)} 100%{transform:rotate(360deg) scale(1)} }
+@keyframes btnPulse  { 0%{transform:scale(1)} 50%{transform:scale(.82)} 100%{transform:scale(1)} }
+
+/* ── Main content ── */
+.wl-main {
+  position:relative; z-index:10; flex:1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 32px 72px; min-height:100vh;
+}
+
+/* eyebrow */
+.wl-eyebrow {
+  font-size:.6rem; letter-spacing:6px; text-transform:uppercase;
+  color:var(--R); font-weight:600; margin-bottom:20px;
+  display:flex; align-items:center; gap:12px;
+  animation:fadeUp .7s .2s var(--smooth) both;
+}
+.wl-eyebrow::before,.wl-eyebrow::after {
+  content:''; flex:1; max-width:64px; height:1px;
+}
+.wl-eyebrow::before { background:linear-gradient(90deg, transparent, var(--R)); }
+.wl-eyebrow::after  { background:linear-gradient(90deg, var(--R), transparent); }
+
+.wl-title {
+  font-family:var(--fD);
+  font-size:clamp(2.8rem,5vw,5.4rem);
+  font-weight:700; line-height:1.04; text-align:center; margin-bottom:16px;
+  background:linear-gradient(135deg, var(--text) 0%, var(--text) 28%, var(--R) 46%, var(--text) 62%, var(--gold) 78%, var(--text) 95%);
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:logoShine 7s linear infinite, fadeUp .7s .3s var(--smooth) both;
+}
+.wl-sub {
+  font-size:clamp(.85rem,1.8vw,1rem); font-weight:300; color:var(--textSub);
+  text-align:center; max-width:500px; line-height:1.82; margin-bottom:56px;
+  animation:fadeUp .7s .4s var(--smooth) both;
+}
+
+/* ── Cards ── */
+.wl-cards {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:26px; max-width:820px; width:100%;
+  animation:fadeUp .7s .5s var(--smooth) both;
+}
+.wl-card {
+  position:relative; padding:44px 36px 40px; border-radius:26px;
+  background:var(--glass); border:1px solid var(--bord);
+  backdrop-filter:blur(32px) saturate(180%);
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  cursor:none; overflow:hidden;
+  transition:transform .3s var(--spring), box-shadow .3s var(--ease), border-color .3s, background .3s;
+}
+@media (hover:none),(pointer:coarse) { .wl-card { cursor:pointer; } }
+body.light .wl-card { background:rgba(255,252,250,.94); box-shadow:0 4px 24px rgba(0,0,0,.06); }
+/* top accent line */
+.wl-card::before {
+  content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+  opacity:0; transition:opacity .35s;
+}
+.wl-card:hover::before,.wl-card:focus-within::before { opacity:.7; }
+.wl-card:hover {
+  transform:translateY(-9px) scale(1.022);
+  box-shadow:0 36px 90px rgba(0,0,0,.6), 0 0 60px var(--Rglow);
+  border-color:var(--bordHot); background:var(--glassHi);
+}
+body.light .wl-card:hover {
+  box-shadow:0 20px 60px rgba(0,0,0,.12), 0 0 40px rgba(192,0,28,.1);
+}
+
+/* Normal card accent */
+.wl-card.nor-card::before {
+  background:linear-gradient(90deg, transparent, var(--R), var(--gold), var(--R), transparent);
+}
+/* Ramadan card accent */
+.wl-card.ram-card::before {
+  background:linear-gradient(90deg, transparent, var(--gold), #ffda80, var(--gold), transparent);
+}
+.wl-card.ram-card:hover {
+  box-shadow:0 36px 90px rgba(0,0,0,.6), 0 0 60px var(--goldglow);
+  border-color:rgba(201,166,58,.5);
+}
+body.light .wl-card.ram-card:hover {
+  box-shadow:0 20px 60px rgba(0,0,0,.12), 0 0 40px rgba(184,136,14,.14);
+}
+
+/* ── Card icon ── */
+.wl-icon {
+  width:80px; height:80px; border-radius:50%; margin-bottom:28px;
+  display:flex; align-items:center; justify-content:center; font-size:2rem;
+  border:1px solid var(--bord); background:var(--glass); position:relative;
+  transition:transform .3s var(--spring), box-shadow .3s;
+}
+.wl-card:hover .wl-icon { transform:scale(1.16); }
+.nor-card .wl-icon {
+  background:var(--Rm); border-color:var(--bordHot);
+  box-shadow:0 0 28px var(--Rglow); color:var(--R);
+}
+.ram-card .wl-icon {
+  background:var(--goldm); border-color:rgba(201,166,58,.35);
+  box-shadow:0 0 28px var(--goldglow); color:var(--gold);
+}
+/* orbiting dot */
+.wl-icon::after {
+  content:''; position:absolute; width:7px; height:7px; border-radius:50%;
+  top:4px; left:50%; transform:translateX(-50%);
+  animation:orbitDot 2.6s linear infinite;
+}
+.nor-card .wl-icon::after { background:var(--R); box-shadow:0 0 6px var(--Rglow); }
+.ram-card .wl-icon::after { background:var(--gold); box-shadow:0 0 6px var(--goldglow); }
+@keyframes orbitDot {
+  0%   { transform:translateX(-50%) rotate(0)       translateY(-40px) rotate(0); }
+  100% { transform:translateX(-50%) rotate(360deg)  translateY(-40px) rotate(-360deg); }
+}
+
+/* ── Card text ── */
+.wl-ctitle {
+  font-family:var(--fD); font-size:2rem; font-weight:700;
+  line-height:1; letter-spacing:.3px; margin-bottom:10px;
+}
+.nor-card .wl-ctitle { color:var(--R); }
+.ram-card .wl-ctitle { color:var(--gold); }
+.wl-csub {
+  font-size:.79rem; font-weight:400; color:var(--textSub);
+  line-height:1.74; margin-bottom:26px; flex:1;
+}
+
+/* ── Feature pills ── */
+.wl-pills { display:flex; flex-direction:column; gap:8px; margin-bottom:32px; width:100%; }
+.wl-pill {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 14px; border-radius:12px;
+  background:var(--glass); border:1px solid var(--bord);
+  font-size:.75rem; color:var(--textMid); text-align:left;
+  transition:background .2s, border-color .2s;
+}
+.wl-card:hover .wl-pill { background:var(--glassHi); }
+[dir=rtl] .wl-pill { text-align:right; }
+.wl-pill i { font-size:.72rem; flex-shrink:0; }
+.nor-card .wl-pill i { color:var(--R); }
+.ram-card .wl-pill i { color:var(--gold); }
+
+/* ── CTA button ── */
+.wl-cta {
+  width:100%; height:52px; border-radius:15px;
+  font-size:.9rem; font-weight:600; letter-spacing:.4px; color:#fff;
+  cursor:none; display:flex; align-items:center; justify-content:center; gap:10px;
+  position:relative; overflow:hidden;
+  transition:transform .25s var(--spring), box-shadow .25s;
+  border:1px solid transparent;
+}
+@media (hover:none),(pointer:coarse) { .wl-cta { cursor:pointer; } }
+.wl-cta::before {
+  content:''; position:absolute; top:0; left:-140%; width:60%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.24), transparent);
+  transform:skewX(-14deg); transition:left .6s var(--ease);
+}
+.wl-cta:hover::before { left:180%; }
+.wl-cta:hover { transform:translateY(-3px); }
+.wl-cta:active { transform:scale(.97); }
+.nor-card .wl-cta {
+  background:linear-gradient(135deg, var(--R), var(--R2));
+  box-shadow:0 8px 32px var(--Rglow);
+}
+.nor-card .wl-cta:hover { box-shadow:0 16px 52px var(--RglowHot); }
+.ram-card .wl-cta {
+  background:linear-gradient(135deg, #c99a20, #7a5a00);
+  box-shadow:0 8px 32px var(--goldglow);
+}
+.ram-card .wl-cta:hover { box-shadow:0 16px 52px rgba(201,166,58,.55); }
+
+/* ── Ramadan decorations ── */
+.ram-crescent {
+  position:absolute; top:14px; right:18px; font-size:1.2rem;
+  opacity:.22; pointer-events:none;
+  animation:crescGlow 3s ease-in-out infinite alternate;
+}
+[dir=rtl] .ram-crescent { right:auto; left:18px; }
+@keyframes crescGlow { from{opacity:.08;transform:scale(.92)} to{opacity:.32;transform:scale(1.06)} }
+.ram-stars { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:26px; }
+.ram-star {
+  position:absolute; width:2px; height:2px; border-radius:50%; background:var(--gold);
+  animation:starTwinkle 2s ease-in-out infinite alternate;
+}
+@keyframes starTwinkle { from{opacity:.04;transform:scale(.5)} to{opacity:.28;transform:scale(1.5)} }
+
+/* ── Note row ── */
+.wl-note {
+  margin-top:40px; font-size:.73rem; color:var(--textSub);
+  text-align:center; display:flex; align-items:center; gap:9px;
+  animation:fadeUp .7s .7s var(--smooth) both;
+}
+.wl-note i { font-size:.7rem; color:var(--R); }
+
+/* ── Back button (shown if mode already set) ── */
+.wl-back {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+  z-index:700; display:none;
+  animation:fadeUp .6s .6s var(--smooth) both;
+}
+.wl-back a {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:10px 22px; border-radius:50px;
+  background:var(--glass); border:1px solid var(--bord);
+  color:var(--textSub); font-size:.76rem;
+  backdrop-filter:blur(20px); transition:all .22s var(--ease);
+  cursor:none;
+}
+@media (hover:none),(pointer:coarse) { .wl-back a { cursor:pointer; } }
+.wl-back a:hover { border-color:var(--bordHot); color:var(--R); background:var(--Rm); }
+
+/* ── Current mode badge ── */
+.wl-mode-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:5px 14px; border-radius:50px; font-size:.68rem; font-weight:500;
+  border:1px solid var(--bord); color:var(--textSub);
+  margin-bottom:24px; background:var(--glass);
+  animation:fadeUp .7s .15s var(--smooth) both;
+  transition:all .3s;
+}
+.wl-mode-badge.active-normal { border-color:var(--bordHot); color:var(--R); background:var(--Rm); }
+.wl-mode-badge.active-ramadan { border-color:rgba(201,166,58,.4); color:var(--gold); background:var(--goldm); }
+
+/* ── Flash overlay ── */
+#wl-flash {
+  position:fixed; inset:0; z-index:9800; pointer-events:none;
+  opacity:0; background:var(--bg); transition:opacity .4s var(--ease);
+}
+#wl-flash.out { opacity:1; }
+
+/* ── Toast ── */
+#wl-toast {
+  position:fixed; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(18px);
+  padding:13px 28px; border-radius:18px;
+  font-size:.78rem; font-weight:500; letter-spacing:.2px;
+  opacity:0; pointer-events:none; white-space:nowrap; z-index:9999; color:#fff;
+  border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(28px);
+  box-shadow:0 18px 56px rgba(0,0,0,.72); transition:all .38s var(--smooth);
+  max-width:92vw;
+}
+#wl-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+#wl-toast.ok   { background:rgba(4,112,52,.94); }
+#wl-toast.gold { background:rgba(130,90,0,.94); border-color:rgba(201,166,58,.3); }
+#wl-toast.info { background:rgba(22,68,185,.94); }
+
+/* ── Keyboard shortcut hint ── */
+.wl-shortcuts {
+  position:fixed; bottom:28px; right:36px; z-index:700;
+  display:flex; gap:8px; align-items:center;
+  font-size:.64rem; color:var(--textSub);
+  opacity:.5; transition:opacity .2s;
+  animation:fadeUp .6s 1.2s var(--smooth) both;
+}
+.wl-shortcuts:hover { opacity:1; }
+.wl-shortcuts kbd {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:5px;
+  border:1px solid var(--bord); background:var(--glass);
+  font-family:var(--fB); font-size:.6rem; font-weight:600;
+  color:var(--textMid);
+}
+[dir=rtl] .wl-shortcuts { right:auto; left:36px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+@media (max-width:680px) {
+  .wl-cards { grid-template-columns:1fr; max-width:420px; }
+  .wl-nav { padding:0 24px; }
+  .wl-shortcuts { display:none; }
+}
+@media (max-width:420px) {
+  .wl-main { padding:86px 16px 52px; }
+  .wl-card { padding:36px 22px 32px; }
+}
+</style>
+</head>
+<body>
+
+<div id="wl-flash"></div>
+<div id="nv-cursor"><div class="c-dot" id="cDot"></div><div class="c-ring" id="cRing"></div></div>
+<div id="wl-loader"><div class="wl-ll">N<b>E</b>VIS</div><div class="wl-lt"><div class="wl-lf"></div></div></div>
+<div class="wl-bg"></div>
+<div class="wl-grid"></div>
+<div class="wl-particles" id="wlParticles"></div>
+
+<!-- ── NAV ── -->
+<nav class="wl-nav">
+  <div class="wl-logo">NEVIS</div>
+  <div class="wl-nav-btns">
+    <button class="wl-nav-btn" id="langBtn" onclick="_nvToggleLang()" title="Language (L)" data-sound="lang">
+      <i class="fas fa-language"></i><span class="btn-lbl"> عربي</span>  <!-- initial, will be updated by script -->
+    </button>
+    <button class="wl-nav-btn" id="themeBtn" onclick="_nvToggleTheme()" title="Theme (T)" data-sound="theme">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="wl-main">
+
+  <!-- current mode indicator -->
+  <div class="wl-mode-badge" id="modeBadge" style="display:none">
+    <i class="fas fa-circle-check"></i><span id="t_currentMode">No mode set</span>
+  </div>
+
+  <div class="wl-eyebrow"><span id="t_eyebrow">Choose Your Experience</span></div>
+  <h1 class="wl-title" id="t_title">Welcome to NeViS</h1>
+  <p class="wl-sub" id="t_sub">Select how you'd like to experience the site. Your choice is saved and can be changed anytime.</p>
+
+  <div class="wl-cards">
+
+    <!-- ── NORMAL MODE (Music) ── -->
+    <div class="wl-card nor-card" id="cardNormal" tabindex="0" role="button" aria-label="Choose Normal mode">
+      <div class="wl-icon"><i class="fas fa-music"></i></div>
+      <div class="wl-ctitle" id="t_normalTitle">Music</div>
+      <p class="wl-csub" id="t_normalSub">Full experience with music and all audio enabled.</p>
+      <div class="wl-pills">
+        <div class="wl-pill"><i class="fas fa-volume-high"></i><span id="t_np1">Music plays normally</span></div>
+        <div class="wl-pill"><i class="fas fa-play-circle"></i><span id="t_np2">All audio enabled</span></div>
+        <div class="wl-pill"><i class="fas fa-bell-slash"></i><span id="t_np3">No forced button sounds</span></div>
+      </div>
+      <button class="wl-cta" onclick="chooseMode('normal')">
+        <span id="t_normalBtn">Enter Site</span><i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- ── RAMADAN MODE (No Music) ── -->
+    <div class="wl-card ram-card" id="cardRamadan" tabindex="0" role="button" aria-label="Choose Ramadan mode">
+      <div class="ram-stars" id="ramStars"></div>
+      <div class="ram-crescent">☽</div>
+      <div class="wl-icon"><i class="fas fa-star-and-crescent"></i></div>
+      <div class="wl-ctitle" id="t_ramTitle">No Music</div>
+      <p class="wl-csub" id="t_ramSub">Respectful mode: music muted, gentle sounds on every interaction.</p>
+      <div class="wl-pills">
+        <div class="wl-pill"><i class="fas fa-volume-xmark"></i><span id="t_rp1">Music muted across all pages</span></div>
+        <div class="wl-pill"><i class="fas fa-hand-pointer"></i><span id="t_rp2">Sound on every button press</span></div>
+        <div class="wl-pill"><i class="fas fa-download"></i><span id="t_rp3">Download chime on all pages</span></div>
+      </div>
+      <button class="wl-cta" onclick="chooseMode('ramadan')">  <!-- fixed: was 'No Muisic' -->
+        <span id="t_ramBtn">You are boring</span><i class="fas fa-star-and-crescent"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <p class="wl-note">
+    <i class="fas fa-rotate"></i>
+    <span id="t_note">You can change this anytime via the ⚙ button on any page.</span>
+  </p>
+
+</main>
+
+<!-- ── BACK LINK (shown if mode already set) ── -->
+<div class="wl-back" id="wlBack">
+  <a href="home.html" id="backLink"><i class="fas fa-arrow-left"></i><span id="t_goBack">Back to Site</span></a>
+</div>
+
+<!-- ── KEYBOARD HINT ── -->
+<div class="wl-shortcuts">
+  <kbd>1</kbd><span id="t_key1">Music</span>
+  <kbd style="margin-left:6px">2</kbd><span id="t_key2">No Music</span>
+  <kbd style="margin-left:6px">T</kbd><span>theme</span>
+  <kbd style="margin-left:2px">L</kbd><span>lang</span>
+</div>
+
+<div id="wl-toast"></div>
+<script src="nv-sounds.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   welcome.html  ·  v5 (merged: bilingual toggle + Arabic button label)
+═══════════════════════════════════════════════════════════ */
+
+/* ── Translation dictionary ── */
+const TW = {
+  en: {
+    t_eyebrow:     'Choose Your Experience',
+    t_title:       'Welcome to NeViS',
+    t_sub:         "Select how you'd like to experience the site. Your choice is saved and can be changed anytime.",
+    t_currentMode: 'Current: No Music',
+    t_normalTitle: 'Music',
+    t_normalSub:   'Full experience with music and all audio enabled.',
+    t_np1: 'Music plays normally',
+    t_np2: 'All audio enabled',
+    t_np3: 'No forced button sounds',
+    t_normalBtn:   'Enter Site',
+    t_ramTitle:    'No Music',
+    t_ramSub:      'Respectful mode: music muted, gentle sounds on every interaction.',
+    t_rp1: 'Music muted across all pages',
+    t_rp2: 'Sound on every button press',
+    t_rp3: 'Download chime on all pages',
+    t_ramBtn:      'You are boring',
+    t_note:        'You can change this anytime via the ⚙ button on any page.',
+    t_goBack:      'Back to Site',
+    t_key1: 'Music', t_key2: 'No Music',
+    mode_normal_badge: 'Current mode: Music',
+    mode_ramadan_badge:'Current mode: No Music 🌙',
+  },
+  ar: {
+    t_eyebrow:     'اختر تجربتك',
+    t_title:       'أهلاً بك في NeViS',
+    t_sub:         'اختر كيف تريد تصفّح الموقع. يُحفظ اختيارك ويمكن تغييره في أي وقت.',
+    t_currentMode: 'الوضع الحالي: موسيقي',
+    t_normalTitle: 'موسيقى',
+    t_normalSub:   'التجربة الكاملة مع الموسيقى وجميع الأصوات.',
+    t_np1: 'الموسيقى تعمل عادياً',
+    t_np2: 'جميع الأصوات مفعّلة',
+    t_np3: 'بدون أصوات أزرار إجبارية',
+    t_normalBtn:   'دخول الموقع',
+    t_ramTitle:    'منغير موسيقى',
+    t_ramSub:      'وضع محترم: الموسيقى مكتومة، أصوات لطيفة عند كل تفاعل.',
+    t_rp1: 'الموسيقى مكتومة في كل الصفحات',
+    t_rp2: 'صوت عند كل ضغطة زر',
+    t_rp3: 'نغمة تنزيل في جميع الصفحات',
+    t_ramBtn:      'انت ممل',
+    t_note:        'يمكنك تغيير ذلك في أي وقت عبر زر ⚙ في أي صفحة.',
+    t_goBack:      'العودة للموقع',
+    t_key1: ' موسيقي ', t_key2: 'غير موسيقي',
+    mode_normal_badge: 'الوضع الحالي:موسيقي',
+    mode_ramadan_badge:'الوضع الحالي: منغير موسيقي 🌙',
+  }
+};
+
+let _lang  = localStorage.getItem('nv_lang')  || 'en';
+let _theme = localStorage.getItem('nv_theme') || 'dark';
+if (!localStorage.getItem('nv_theme')) {
+  _theme = window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark';
+  localStorage.setItem('nv_theme', _theme);
+}
+const tw = k => (TW[_lang] && TW[_lang][k] != null) ? TW[_lang][k] : (TW.en[k] ?? k);
+function applyTr() {
+  const ar = _lang === 'ar';
+  document.documentElement.lang = _lang;
+  document.documentElement.dir  = ar ? 'rtl' : 'ltr';
+  
+  // Update translation keys
+  Object.keys(TW.en).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = tw(id);
+  });
+
+  // Set language button label: when Arabic, show " EN"; when English, show " عربي" (with space)
+  const langBtn = document.getElementById('langBtn');
+  if (langBtn) {
+    const lbl = langBtn.querySelector('.btn-lbl');
+    if (lbl) {
+      lbl.textContent = ar ? ' EN' : ' عربي';
+    }
+  }
+
+  // Update mode badge text if visible
+  const cur = localStorage.getItem('nv_mode');
+  if (cur) {
+    const badge = document.getElementById('t_currentMode');
+    if (badge) badge.textContent = cur === 'ramadan' ? tw('mode_ramadan_badge') : tw('mode_normal_badge');
+  }
+}
+
+/* ── Apply theme ── */
+function applyTheme(th) {
+  _theme = th;
+  localStorage.setItem('nv_theme', th);
+  document.body.classList.toggle('light', th === 'light');
+  const ico = document.querySelector('#themeBtn i');
+  if (ico) ico.className = th === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+}
+
+/* ── Toggle functions (used by buttons AND keyboard) ── */
+function _nvToggleLang() {
+  _lang = _lang === 'en' ? 'ar' : 'en';
+  localStorage.setItem('nv_lang', _lang);
+  const lb = document.getElementById('langBtn');
+  if (lb) { lb.classList.add('pulsing'); setTimeout(() => lb.classList.remove('pulsing'), 360); }
+  if (window.NVS) NVS.translate();
+  applyTr();
+}
+
+function _nvToggleTheme() {
+  const next = _theme === 'dark' ? 'light' : 'dark';
+  const btn = document.getElementById('themeBtn');
+  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 440); }
+  if (window.NVS) NVS.theme();
+  applyTheme(next);
+}
+
+/* ── Build Ramadan stars ── */
+function buildStars() {
+  const c = document.getElementById('ramStars'); if (!c) return;
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement('div');
+    s.className = 'ram-star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3).toFixed(2)}s;animation-duration:${(1.4+Math.random()*2).toFixed(2)}s;`;
+    c.appendChild(s);
+  }
+}
+
+/* ── Build background particles ── */
+function buildParticles() {
+  const c = document.getElementById('wlParticles'); if (!c) return;
+  const colors = ['var(--R)', 'var(--gold)', 'rgba(212,0,31,.4)', 'rgba(201,166,58,.4)'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'wl-particle';
+    const size = 2 + Math.random() * 4;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;
+      bottom:${-10 + Math.random()*20}%;
+      animation-duration:${12 + Math.random()*18}s;
+      animation-delay:${Math.random()*12}s;
+    `;
+    c.appendChild(p);
+  }
+}
+
+/* ── Show current mode badge ── */
+function updateModeBadge() {
+  const cur = localStorage.getItem('nv_mode');
+  const badge = document.getElementById('modeBadge');
+  if (!badge) return;
+  if (cur) {
+    badge.style.display = 'inline-flex';
+    badge.className = 'wl-mode-badge ' + (cur === 'ramadan' ? 'active-ramadan' : 'active-normal');
+    const txt = document.getElementById('t_currentMode');
+    if (txt) txt.textContent = cur === 'ramadan' ? tw('mode_ramadan_badge') : tw('mode_normal_badge');
+    const ico = badge.querySelector('i');
+    if (ico) ico.className = cur === 'ramadan' ? 'fas fa-star-and-crescent' : 'fas fa-circle-check';
+  }
+}
+
+/* ── Mode selection ── */
+function chooseMode(mode) {
+  localStorage.setItem('nv_mode', mode);
+  if (window.NVS) {
+    if (mode === 'ramadan') NVS.modeRamadan();
+    else NVS.modeNormal();
+  }
+  const msg = mode === 'ramadan'
+    ? '🌙 ' + (_lang === 'ar' ? 'وضع رمضان مفعّل' : 'Ramadan Mode activated')
+    : '🎵 ' + (_lang === 'ar' ? 'الوضع العادي مفعّل' : 'Normal Mode activated');
+  toast(msg, mode === 'ramadan' ? 'gold' : 'ok');
+
+  /* Highlight chosen card */
+  document.querySelectorAll('.wl-card').forEach(c => c.classList.remove('selected'));
+  const chosen = document.getElementById(mode === 'ramadan' ? 'cardRamadan' : 'cardNormal');
+  if (chosen) chosen.classList.add('selected');
+
+  /* Flash transition then navigate */
+  const fl = document.getElementById('wl-flash');
+  setTimeout(() => { if (fl) fl.classList.add('out'); }, 320);
+  const ref = sessionStorage.getItem('nv_ref') || 'home.html';
+  sessionStorage.removeItem('nv_ref');
+  setTimeout(() => { window.location.href = ref; }, 760);
+}
+
+/* ── Toast ── */
+let _tt;
+function toast(msg, type, dur) {
+  const el = document.getElementById('wl-toast'); if (!el) return;
+  clearTimeout(_tt); el.textContent = msg; el.className = 'show ' + (type || 'info');
+  _tt = setTimeout(() => el.className = '', dur || 2800);
+}
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown', e => {
+  const tag = (document.activeElement?.tagName || '').toLowerCase();
+  if (['input','textarea','select'].includes(tag)) return;
+  if (e.key === 't' || e.key === 'T') { e.preventDefault(); _nvToggleTheme(); }
+  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); _nvToggleLang(); }
+  if (e.key === '1') { e.preventDefault(); chooseMode('normal'); }
+  if (e.key === '2') { e.preventDefault(); chooseMode('ramadan'); }
+});
+
+/* ── Card keyboard support ── */
+['cardNormal','cardRamadan'].forEach(id => {
+  const card = document.getElementById(id);
+  if (card) card.addEventListener('keypress', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      card.querySelector('.wl-cta')?.click();
+    }
+  });
+});
+
+/* ── Custom cursor ── */
+(function () {
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const dot = document.getElementById('cDot');
+  const ring = document.getElementById('cRing');
+  if (!dot || !ring) return;
+  let mx = -300, my = -300, rx = -300, ry = -300;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  const tick = () => {
+    rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
+    dot.style.transform  = `translate(${mx  - 5}px, ${my  - 5}px)`;
+    ring.style.transform = `translate(${rx - 19}px, ${ry - 19}px)`;
+    requestAnimationFrame(tick);
+  };
+  tick();
+  document.querySelectorAll('button, .wl-card, a').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+  });
+})();
+
+/* ── Boot ── */
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(_theme);
+  applyTr();                // sets correct button label and translations
+  buildStars();
+  buildParticles();
+  updateModeBadge();
+
+  /* Show back button if coming from the site (mode already set) */
+  if (localStorage.getItem('nv_mode')) {
+    const b = document.getElementById('wlBack');
+    if (b) b.style.display = 'block';
+  }
+
+  /* Init sounds */
+  if (window.NVS) {
+    NVS.applyMode();
+    NVS.init();
+  }
+
+  /* Dismiss loader */
+  setTimeout(() => document.getElementById('wl-loader')?.classList.add('gone'), 1500);
+});
+</script>
+
+</body>
+</html>

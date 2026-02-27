@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<script>
+/* ── Apply saved theme & lang BEFORE paint to prevent flash ── */
+(function(){
+  var th=localStorage.getItem('nv_theme')||'dark';
+  var os=window.matchMedia('(prefers-color-scheme:light)').matches;
+  if(!localStorage.getItem('nv_theme')) th=os?'light':'dark';
+  if(th==='light') document.documentElement.classList.add('nv-light-pre');
+})();
+</script>
+<script>
+/* ── Mode guard: redirect to welcome.html if no mode set ── */
+(function(){
+  if(!localStorage.getItem('nv_mode')){
+    sessionStorage.setItem('nv_ref', location.href.split('/').pop()||'home.html');
+    location.replace('welcome.html');
+  }
+})();
+</script>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="NEVIS — official site of NeViS, YouTuber & gaming content creator at Nevis_G10."/>
+<title>NeViS | Nevis_G10 — Official Site</title>
+<link rel="stylesheet" href="home.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script>
+/* ══ Standalone theme & lang — work with OR without script.js ══ */
+function _nvToggleTheme(){
+  var next=(localStorage.getItem('nv_theme')||'dark')==='dark'?'light':'dark';
+  localStorage.setItem('nv_theme',next);
+  document.body.classList.toggle('light',next==='light');
+  /* Spin icon */
+  var btn=document.getElementById('themeBtn');
+  if(btn){btn.classList.add('spinning');setTimeout(function(){btn.classList.remove('spinning');},420);}
+  /* Swap all theme icons */
+  document.querySelectorAll('.nv-theme-btn i').forEach(function(i){
+    i.className=next==='light'?'fas fa-moon':'fas fa-sun';
+  });
+  /* Sound */
+  if(window.NVS) NVS.theme();
+  /* Toast */
+  var toast=document.getElementById('nv-toast');
+  if(toast){toast.textContent=next==='light'?'☀️ Light mode':'🌙 Dark mode';toast.className='show info';setTimeout(function(){toast.className=''},1600);}
+  /* Sync NV if loaded */
+  if(window.NV && window.NV.applyTheme) window.NV.applyTheme(next,false);
+}
+function _nvToggleLang(){
+  var next=(localStorage.getItem('nv_lang')||'en')==='en'?'ar':'en';
+  localStorage.setItem('nv_lang',next);
+  document.documentElement.lang=next;
+  document.documentElement.dir=next==='ar'?'rtl':'ltr';
+  /* Pulse button */
+  document.querySelectorAll('.nv-lang-btn').forEach(function(b){
+    b.classList.add('pulsing');setTimeout(function(){b.classList.remove('pulsing');},360);
+  });
+  /* Slide */
+  document.documentElement.classList.add('lang-switching');
+  setTimeout(function(){document.documentElement.classList.remove('lang-switching');},400);
+  /* Sound */
+  if(window.NVS) NVS.translate();
+  /* Sync NV */
+  if(window.NV && window.NV.applyTranslations){
+    window.NV.applyTranslations();window.NV.applyAuthState();
+  } else {
+    document.querySelectorAll('.btn-lbl').forEach(function(s){
+      if(s.textContent.trim()==='AR'||s.textContent.trim()==='EN')
+        s.textContent=next==='ar'?' EN':' AR';
+    });
+  }
+  var toast=document.getElementById('nv-toast');
+  if(toast){
+    toast.textContent=next==='ar'?'🌐 تم التبديل إلى العربية':'🌐 Switched to English';
+    toast.className='show ok';setTimeout(function(){toast.className=''},1800);
+  }
+}
+/* Also attach to NV namespace when ready */
+document.addEventListener('DOMContentLoaded',function(){
+  if(window.NV){window.NV.toggleTheme=_nvToggleTheme;window.NV.toggleLang=_nvToggleLang;}
+});
+</script>
+</head>
+<body>
+<div id="nv-cursor"><div class="c-dot"></div><div class="c-ring"></div></div>
+<div id="nv-theme-flash"></div>
+<div id="nv-exit-overlay"></div>
+<div id="nv-progress"><div id="nv-progress-fill"></div></div>
+<div id="nv-loader"><div class="loader-logo">N<span>E</span>VIS</div></div>
+<div class="bg-base"></div>
+<div class="bg-grid"></div>
+<canvas id="grain"></canvas>
+<button id="nv-btt" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<!-- ══ HEADER ══ -->
+<header class="nv-header">
+  <a href="home.html" class="nv-logo">NEVIS</a>
+  <nav class="nv-nav">
+    <a href="home.html" class="active"><span data-i18n="nav.home">Home</span></a>
+    <a href="about.html"><span data-i18n="nav.about">About</span></a>
+    <a href="skills.html"><span data-i18n="nav.skills">Skills</span></a>
+    <a href="any_links.html"><span data-i18n="nav.links">Links</span></a>
+    <button class="nv-btn nv-mode-btn" id="modeBtn" onclick="window.location.href='welcome.html'" title="Change experience mode">
+      <i class="fas fa-gear"></i>
+    </button>
+   <button class="nv-btn nv-lang-btn" id="langBtn" onclick="_nvToggleLang()" title="Switch language (L)">
+      <i class="fas fa-language"></i><span class="btn-lbl"> AR</span>
+    </button>
+    <button class="nv-btn nv-theme-btn" id="themeBtn" onclick="_nvToggleTheme()" title="Toggle theme (T)">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button class="nv-btn primary" id="loginBtn" onclick="location.href='Login.html'">
+      <i class="fas fa-right-to-bracket"></i><span data-i18n="nav.login">Login</span>
+    </button>
+    <button class="nv-btn danger" id="logoutBtn" onclick="NV.logout()" style="display:none">
+      <span data-i18n="nav.logout">Sign Out</span>
+    </button>
+  </nav>
+  <button class="nv-hamburger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile Nav -->
+<nav class="nv-nav-mobile" aria-label="Mobile navigation">
+  <a href="home.html" class="active"><span data-i18n="nav.home">Home</span></a>
+  <a href="about.html"><span data-i18n="nav.about">About</span></a>
+  <a href="skills.html"><span data-i18n="nav.skills">Skills</span></a>
+  <a href="any_links.html"><span data-i18n="nav.links">Links</span></a>
+  <div class="mob-row">
+    <button class="nv-btn nv-mode-btn" onclick="window.location.href='welcome.html'"><i class="fas fa-gear"></i></button>
+    <button class="nv-btn nv-lang-btn" onclick="_nvToggleLang()">
+      <i class="fas fa-language"></i><span class="btn-lbl"> AR</span>
+    </button>
+    <button class="nv-btn nv-theme-btn" onclick="_nvToggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button class="nv-btn primary" id="mob-loginBtn" onclick="location.href='Login.html'">
+      <span data-i18n="nav.login">Login</span>
+    </button>
+    <button class="nv-btn danger" id="mob-logoutBtn" onclick="NV.logout()" style="display:none">
+      <span data-i18n="nav.logout">Sign Out</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ PAGE ══ -->
+<div class="nv-page">
+
+  <!-- Hero -->
+  <section class="nv-hero">
+    <a href="https://www.youtube.com/channel/UCVCFRbXWruf5fZ76MKq_BOw" target="_blank" rel="noopener" class="yt-badge">
+      <i class="fab fa-youtube"></i>
+      <span class="yt-badge-dot"></span>
+      <span data-i18n="home.badge">@Nevis_G10 on YouTube</span>
+    </a>
+    <h1>
+      <span data-i18n="home.h1a">Official Site of</span>
+      <br/><em><span data-i18n="home.h1em">NeViS</span></em>
+    </h1>
+    <div class="nv-divider"></div>
+    <p class="hero-sub">
+      <span data-i18n="home.sub">Gaming content creator &amp; YouTuber behind Nevis_G10.</span>
+    </p>
+    <div class="hero-cta">
+      <a href="https://www.youtube.com/channel/UCVCFRbXWruf5fZ76MKq_BOw" target="_blank" rel="noopener" class="cta-primary">
+        <i class="fab fa-youtube"></i><span data-i18n="home.cta1">Watch on YouTube</span>
+      </a>
+      <a href="about.html" class="cta-ghost">
+        <i class="fas fa-user"></i><span data-i18n="home.cta2">Who is NeViS</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Stats Strip -->
+  <div class="nv-stats">
+    <div class="stat-item" data-target="1" data-suffix="+">
+      <div class="stat-num">0<span class="stat-suffix">+</span></div>
+      <div class="stat-label"><span data-i18n="stat.yt">YouTube Channel</span></div>
+    </div>
+    <div class="stat-item" data-target="6" data-suffix="+">
+      <div class="stat-num">0<span class="stat-suffix">+</span></div>
+      <div class="stat-label"><span data-i18n="stat.skills">Core Skills</span></div>
+    </div>
+    <div class="stat-item" data-target="5" data-suffix="+">
+      <div class="stat-num">0<span class="stat-suffix">+</span></div>
+      <div class="stat-label"><span data-i18n="stat.platforms">Platforms</span></div>
+    </div>
+    <div class="stat-item" data-target="100" data-suffix="%">
+      <div class="stat-num">0<span class="stat-suffix">%</span></div>
+      <div class="stat-label"><span data-i18n="stat.passion">Passion</span></div>
+    </div>
+  </div>
+
+  <!-- YouTube Featured Card -->
+  <a href="https://www.youtube.com/channel/UCVCFRbXWruf5fZ76MKq_BOw" target="_blank" rel="noopener" class="yt-card">
+    <div class="yt-card-ico"><i class="fab fa-youtube"></i></div>
+    <div class="yt-card-body">
+      <span class="yt-card-tag"><span data-i18n="home.yt.tag">Main Channel</span></span>
+      <h3><span data-i18n="home.yt.h">YouTube · @Nevis_G10</span></h3>
+      <p><span data-i18n="home.yt.p">Gaming walkthroughs, anime reactions and programming content.</span></p>
+    </div>
+    <span class="yt-card-arr"><i class="fas fa-arrow-right"></i></span>
+  </a>
+
+  <!-- Split Section -->
+  <section class="nv-card nv-split">
+    <div class="split-text">
+      <div class="item"><span class="item-num">01</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.01t">Welcome to the official NeViS site</span></strong>
+          <span data-i18n="home.01b">Built from scratch — home base for everything NeViS.</span>
+        </div>
+      </div>
+      <div class="item"><span class="item-num">02</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.02t">YouTube · @Nevis_G10</span></strong>
+          <span data-i18n="home.02b">Gaming content, anime reactions, and programming.</span>
+        </div>
+      </div>
+      <div class="item"><span class="item-num">03</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.03t">Content for every taste</span></strong>
+          <span data-i18n="home.03b">Games, anime, programming tutorials — always fresh.</span>
+        </div>
+      </div>
+      <div class="item"><span class="item-num">04</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.04t">Join the community</span></strong>
+          <span data-i18n="home.04b">Discord, Instagram, TikTok, Facebook — everywhere.</span>
+        </div>
+      </div>
+      <div class="item"><span class="item-num">05</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.05t">Explore this site</span></strong>
+          <span data-i18n="home.05b">Check out Skills, About, and Links sections.</span>
+        </div>
+      </div>
+      <div class="item"><span class="item-num">06</span>
+        <div class="item-body">
+          <strong><span data-i18n="home.06t">Want to know who NeViS is?</span></strong>
+          <span data-i18n="home.06b">Head to the About page for the full story.</span>
+        </div>
+      </div>
+    </div>
+    <div class="split-img">
+      <div class="c-tl"></div><div class="c-br"></div>
+      <img src="/Photos/Welcome.png" alt="Welcome to NEVIS"/>
+    </div>
+  </section>
+
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="/Music/Home.mp3" type="audio/mpeg">
+</audio>
+<button id="musicToggle" class="nv-music-btn" aria-label="Toggle Music">
+  <i class="fas fa-music"></i>
+</button>
+<!-- ══ FOOTER ══ -->
+<footer class="nv-footer">
+  <span class="nv-copy"><span data-i18n="footer.copy">© 2025 NEVIS — Asem Ebada Borai Wattany</span></span>
+  <div class="nv-social">
+    <a href="https://www.instagram.com/nevis_g10/" target="_blank" rel="noopener" class="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/channel/UCVCFRbXWruf5fZ76MKq_BOw"   target="_blank" rel="noopener" class="youtube"   aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.facebook.com/NevisB/"     target="_blank" rel="noopener" class="facebook"  aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+    <a href="https://discord.gg/bckre5xV7d"        target="_blank" rel="noopener" class="discord"   aria-label="Discord"><i class="fab fa-discord"></i></a>
+    <a href="https://www.tiktok.com/@wrong5080"    target="_blank" rel="noopener" class="tiktok"    aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+  </div>
+</footer>
+
+<div id="nv-toast"></div>
+
+<script src="nv-sounds.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="NeViS — Login to the official Nevis_G10 portal"/>
+<title>Login | NeViS — Nevis_G10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ═══════════════════════════════════════════════════════
+   NeViS · Login v4 · Pro Edition
+   Concept  : Intelligence terminal — obsidian + crimson
+   Layout   : 54/46 split — stage left, glass form right
+   Type     : Cormorant Garamond / DM Sans / DM Mono
+   Fixes    : Cursor, light-mode, RTL, OS theme, kbd shortcuts
+═══════════════════════════════════════════════════════ */
+:root {
+  /* palette */
+  --bg:       #060309;
+  --bg2:      #09040e;
+  --bg3:      #0c0614;
+  --surf:     rgba(255,255,255,.035);
+  --surfHi:   rgba(255,255,255,.07);
+  --brd:      rgba(255,255,255,.072);
+  --brdHot:   rgba(212,0,38,.55);
+  --brdGold:  rgba(201,170,70,.32);
+
+  --r:        #d1001e;
+  --r2:       #8b0015;
+  --rg:       rgba(209,0,30,.22);
+  --rgH:      rgba(209,0,30,.5);
+  --rm:       rgba(209,0,30,.09);
+
+  --gold:     #c9aa46;
+  --goldG:    rgba(201,170,70,.14);
+
+  --snow:     #ece5f4;
+  --fog:      #a496b2;
+  --mist:     #6e627a;
+
+  /* type */
+  --f1: 'Cormorant Garamond', Georgia, serif;
+  --f2: 'DM Sans', system-ui, sans-serif;
+  --f3: 'DM Mono', 'Courier New', monospace;
+  --fA: 'Cairo', sans-serif;
+
+  /* easing */
+  --e1: cubic-bezier(.4,0,.2,1);
+  --e2: cubic-bezier(.34,1.56,.64,1);
+  --e3: cubic-bezier(.22,.9,.36,1);
+  --t:  .26s var(--e1);
+}
+
+/* ── LIGHT MODE ── warm paper, vivid crimson */
+body.light {
+  --bg:    #c7c7c7;
+  --bg2:   #c0c0c0;
+  --bg3:   #a3a3a3;
+  --surf:  rgba(0,0,0,.03);
+  --surfHi:rgba(0,0,0,.06);
+  --brd:   rgba(0,0,0,.09);
+  --brdHot:rgba(192,0,28,.35);
+  --brdGold:rgba(160,120,10,.28);
+  --rg:    rgba(192,0,28,.18);
+  --rgH:   rgba(192,0,28,.4);
+  --rm:    rgba(192,0,28,.08);
+  --r:     #c00020;
+  --r2:    #800016;
+  --gold:  #b8880e;
+  --goldG: rgba(184,136,14,.12);
+  --snow:  #140608;
+  --fog:   #5a3a40;
+  --mist:  #7a5560;
+}
+body.light .ls {
+  background: linear-gradient(145deg, #f1f1f1, #e9e8e8);
+}
+body.light .ls::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 15%, rgba(192,0,28,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 75% at 80% 85%, rgba(128,0,21,.05) 0%, transparent 55%);
+}
+body.light .ls::after {
+  background-image:
+    linear-gradient(rgba(192,0,28,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,0,28,.018) 1px, transparent 1px);
+}
+body.light #NVL { background: var(--bg); }
+body.light .lp  { background: #dddcdc; }
+body.light .lp::before {
+  background: radial-gradient(circle, rgba(192,0,28,.05), transparent 65%);
+}
+body.light .lcard { box-shadow: 0 40px 90px rgba(0,0,0,.1); }
+body.light .fi input {
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.1);
+  color: var(--snow);
+}
+body.light .fi input:focus {
+  background: rgba(192,0,28,.04);
+  border-color: rgba(192,0,28,.5);
+  box-shadow: 0 0 0 3px rgba(192,0,28,.08);
+}
+body.light .lnav {
+  background: rgba(245,241,238,.92);
+  border-bottom-color: rgba(0,0,0,.08);
+  backdrop-filter: blur(28px) saturate(160%);
+}
+body.light .lnav-logo {
+  background: linear-gradient(110deg, #140608 20%, var(--r) 40%, #140608 56%, var(--gold) 76%, #140608 92%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+body.light ::-webkit-scrollbar-thumb { background: var(--r2); }
+body.light .chkbox { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.18); }
+
+/* ── RESET ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; font-size:16px; scroll-behavior:smooth; }
+body {
+  font-family: var(--f2);
+  background: var(--bg);
+  color: var(--snow);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+  transition: background .45s var(--e1), color .4s var(--e1);
+}
+[dir=rtl], [dir=rtl] * { font-family: var(--fA) !important; }
+a { color:inherit; text-decoration:none; }
+button { font-family:inherit; border:0; background:none; }
+::selection { background:var(--r); color:#808080; }
+::-webkit-scrollbar { width:2px; }
+::-webkit-scrollbar-thumb { background:var(--r2); border-radius:2px; }
+:focus-visible { outline:2px solid var(--r); outline-offset:3px; border-radius:4px; }
+@media (hover:none),(pointer:coarse) { body, button { cursor: auto !important; } }
+
+/* ═══════════════════════════════════════════
+   THEME FLASH OVERLAY
+═══════════════════════════════════════════ */
+#nv-theme-flash {
+  position:fixed; inset:0; z-index:999996; pointer-events:none;
+  opacity:0; background:var(--bg);
+  transition: opacity .18s var(--e1);
+}
+#nv-theme-flash.active { opacity:.65; }
+
+/* ═══════════════════════════════════════════
+   KEYBOARD SHORTCUTS MODAL
+═══════════════════════════════════════════ */
+#nv-shortcuts-backdrop {
+  position:fixed; inset:0; z-index:99997;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(5px);
+  display:none;
+}
+#nv-shortcuts-backdrop.open { display:block; }
+#nv-shortcuts {
+  position:fixed; top:50%; left:50%; z-index:99998;
+  transform:translate(-50%,-50%);
+  background:var(--bg3); border:1px solid var(--brd);
+  border-radius:22px; padding:32px 44px;
+  box-shadow:0 40px 100px rgba(0,0,0,.7), 0 0 60px rgba(209,0,30,.1);
+  backdrop-filter:blur(40px) saturate(200%);
+  display:none; flex-direction:column; gap:14px; min-width:300px;
+  animation:kbdIn .28s var(--e3);
+}
+@keyframes kbdIn { from{opacity:0;transform:translate(-50%,-50%) scale(.92)} to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+#nv-shortcuts.open { display:flex; }
+#nv-shortcuts h3 { font-family:var(--f1); font-size:1.6rem; font-weight:700; margin-bottom:6px; color:var(--snow); }
+.sc-row { display:flex; align-items:center; justify-content:space-between; gap:22px; }
+.sc-key {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:34px; height:34px; padding:0 10px;
+  background:var(--surf); border:1px solid var(--brd);
+  border-radius:8px; font-size:.76rem; font-weight:700;
+  font-family:var(--f3); letter-spacing:1px; color:var(--r);
+}
+.sc-desc { font-size:.82rem; color:var(--mist); }
+.sc-close {
+  position:absolute; top:14px; right:18px;
+  background:none; border:none; color:var(--mist);
+  font-size:1.05rem; cursor:pointer; padding:6px;
+  transition:color var(--t);
+}
+.sc-close:hover { color:var(--r); }
+
+/* ═══════════════════════════════════════════
+   CURSOR — children fixed independently
+═══════════════════════════════════════════ */
+#NVC { position:fixed; top:0; left:0; pointer-events:none; z-index:99999; }
+.cv-d {
+  position:fixed; top:0; left:0;
+  width:10px; height:10px; border-radius:50%;
+  background:var(--r);
+  box-shadow:0 0 14px var(--rgH), 0 0 4px var(--r);
+  will-change:transform;
+  /* NO transition:transform — JS rAF handles it */
+  transition:width .18s var(--e2), height .18s var(--e2),
+             background .25s, opacity .25s, box-shadow .25s;
+}
+.cv-r {
+  position:fixed; top:0; left:0;
+  width:38px; height:38px; border-radius:50%;
+  border:1.5px solid rgba(209,0,30,.5);
+  will-change:transform;
+  /* NO transition:transform — JS lerp handles lag */
+  transition:width .25s var(--e2), height .25s var(--e2),
+             opacity .25s, border-color .25s, border-width .25s;
+}
+body.ch .cv-d { width:6px; height:6px; background:var(--gold); box-shadow:0 0 12px rgba(201,170,70,.5); }
+body.ch .cv-r { width:56px; height:56px; border-color:var(--gold); border-width:2px; }
+/* ══ MUSIC BUTTON ══ */
+.nv-music-btn {
+  position: fixed;
+  bottom: 25px;
+  left: 25px; /* الزاوية اليسرى السفلية */
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--bg-card, #0c050f);
+  border: 1px solid var(--border, rgba(212,0,31,.18));
+  color: var(--text, #f0e6f0);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.nv-music-btn:hover {
+  background: var(--crimson, #d4001f);
+  border-color: var(--crimson-h, #ff1a3c);
+  transform: translateY(-3px);
+}
+
+/* شكل الأيقونة لما الموسيقى تكون مكتومة */
+.nv-music-btn.muted i::before {
+  content: "\f6a9"; /* أيقونة fa-volume-xmark من FontAwesome */
+}
+/* ═══════════════════════════════════════════
+   LOADER
+═══════════════════════════════════════════ */
+#NVL {
+  position:fixed; inset:0; z-index:9900;
+  background:var(--bg);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:32px;
+  transition:opacity .8s var(--e3), visibility .8s;
+}
+#NVL.gone { opacity:0; visibility:hidden; pointer-events:none; }
+.nl-logo {
+  font-family:var(--f1); font-size:clamp(3rem,5vw,4.5rem); font-weight:700;
+  letter-spacing:20px; text-transform:uppercase;
+  animation:nlPulse 1.3s ease-in-out infinite alternate;
+}
+.nl-logo b { color:var(--r); }
+.nl-track { width:200px; height:1px; background:var(--brd); position:relative; overflow:hidden; }
+.nl-fill {
+  position:absolute; top:0; left:0; height:100%;
+  background:linear-gradient(90deg,var(--r2),var(--r),var(--gold));
+  animation:nlFill 1.8s var(--e3) forwards;
+}
+.nl-id {
+  font-family:var(--f3); font-size:.56rem; letter-spacing:4px;
+  color:var(--mist); text-transform:uppercase;
+  animation:nlFade 2s .4s var(--e3) both;
+}
+@keyframes nlPulse { from{opacity:.2;letter-spacing:14px} to{opacity:1;letter-spacing:22px} }
+@keyframes nlFill  { from{width:0} to{width:100%} }
+@keyframes nlFade  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+.lnav {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 36px; z-index:800;
+  background:rgba(6,3,9,.78);
+  backdrop-filter:blur(32px) saturate(200%);
+  border-bottom:1px solid var(--brd);
+  transition:box-shadow .3s, background .4s var(--e1);
+}
+.lnav.s { box-shadow:0 4px 40px rgba(0,0,0,.7); }
+.lnav::after {
+  content:''; position:absolute; bottom:0; left:10%; right:10%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--r),transparent); opacity:.22;
+}
+.lnav-logo {
+  font-family:var(--f1); font-size:1.4rem; font-weight:700;
+  letter-spacing:10px; text-transform:uppercase;
+  background:linear-gradient(110deg,var(--snow) 20%,var(--r) 40%,var(--snow) 56%,var(--gold) 76%,var(--snow) 92%);
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:brandShine 10s linear infinite; cursor:default;
+}
+@keyframes brandShine { 0%{background-position:0%} 100%{background-position:300%} }
+.lnav-links { display:flex; align-items:center; gap:2px; }
+.lnav-links a {
+  font-size:.74rem; color:var(--mist);
+  padding:6px 14px; border-radius:8px;
+  transition:all .22s var(--e1);
+}
+.lnav-links a:hover { background:var(--rm); color:var(--snow); }
+.lnav-btns { display:flex; align-items:center; gap:7px; }
+.lnav-btn {
+  height:32px; padding:0 14px; border-radius:20px;
+  border:1px solid var(--brd); color:var(--fog);
+  font-family:var(--f2); font-size:.7rem; font-weight:500;
+  cursor:none; display:inline-flex; align-items:center; gap:6px;
+  transition:all .22s var(--e1);
+}
+.lnav-btn i { font-size:.82rem; flex-shrink:0; }
+.lnav-btn .btn-lbl { pointer-events:none; }
+@media(hover:none),(pointer:coarse){ .lnav-btn { cursor:pointer; } }
+.lnav-btn:hover { border-color:var(--brdHot); color:var(--r); background:var(--rm); }
+/* Spin animation for theme toggle */
+.lnav-btn.spinning i { animation:iconSpin .38s var(--e2) forwards; }
+@keyframes iconSpin {
+  0%{transform:rotate(0) scale(1)} 50%{transform:rotate(220deg) scale(.65)} 100%{transform:rotate(360deg) scale(1)}
+}
+/* Pulse animation for lang toggle */
+.lnav-btn.pulsing { animation:btnPulse .32s var(--e2); }
+@keyframes btnPulse { 0%{transform:scale(1)} 50%{transform:scale(.84)} 100%{transform:scale(1)} }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.lw {
+  display:grid; grid-template-columns:54% 46%;
+  min-height:100vh; padding-top:56px;
+}
+
+/* ═══════════════════════════════════════════
+   LEFT  —  STAGE
+═══════════════════════════════════════════ */
+.ls {
+  position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg2);
+  transition:background .45s var(--e1);
+}
+.ls::before {
+  content:''; position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 15%, rgba(209,0,30,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 75% at 80% 85%, rgba(139,0,21,.07) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 30% at 55% 50%, rgba(50,0,12,.05) 0%, transparent 70%);
+  transition:background .45s var(--e1);
+}
+.ls::after {
+  content:''; position:absolute; inset:0; z-index:0;
+  background-image:
+    linear-gradient(rgba(209,0,30,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(209,0,30,.022) 1px, transparent 1px);
+  background-size:52px 52px;
+  animation:gridDrift 32s linear infinite;
+  transition:background-image .45s var(--e1);
+}
+@keyframes gridDrift { to { background-position:52px 52px; } }
+
+#stageCv { position:absolute; inset:0; width:100%; height:100%; z-index:1; opacity:.7; }
+
+.ls-scan {
+  position:absolute; left:0; right:0; height:1px; z-index:5;
+  background:linear-gradient(90deg,transparent,rgba(209,0,30,.6),transparent);
+  pointer-events:none;
+  animation:scanAnim 7s ease-in-out infinite;
+}
+@keyframes scanAnim {
+  0%{top:4%;opacity:0}6%{opacity:1}94%{opacity:1}100%{top:96%;opacity:0}
+}
+.ls-bar {
+  position:absolute; top:0; left:0; right:0; height:2px; z-index:6;
+  background:linear-gradient(90deg,#2a000a,var(--r2),var(--r),var(--gold),var(--r),var(--r2));
+  background-size:400% 100%;
+  animation:barFlow 5s linear infinite;
+}
+@keyframes barFlow { to{background-position:400% 0} }
+
+.lc { position:absolute; width:44px; height:44px; z-index:6; opacity:.25; transition:opacity .6s; }
+.ls:hover .lc { opacity:.7; }
+.lc.tl{top:24px;left:24px;border-top:1.5px solid var(--r);border-left:1.5px solid var(--r)}
+.lc.tr{top:24px;right:24px;border-top:1.5px solid var(--r);border-right:1.5px solid var(--r)}
+.lc.bl{bottom:24px;left:24px;border-bottom:1.5px solid var(--r);border-left:1.5px solid var(--r)}
+.lc.br{bottom:24px;right:24px;border-bottom:1.5px solid var(--r);border-right:1.5px solid var(--r)}
+
+.ls-cnt {
+  position:relative; z-index:4;
+  display:flex; flex-direction:column; align-items:center;
+  text-align:center; padding:80px 52px 52px;
+  animation:fadeUp .8s .5s var(--e3) both;
+}
+.ls-badge {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:5px 20px; border-radius:50px; margin-bottom:38px;
+  border:1px solid var(--brdHot); background:var(--rm);
+  font-family:var(--f3); font-size:.56rem; letter-spacing:4px;
+  color:var(--r); text-transform:uppercase;
+}
+.pdot {
+  width:6px; height:6px; border-radius:50%; background:var(--r); flex-shrink:0;
+  animation:pdot 2.4s ease-in-out infinite;
+}
+@keyframes pdot {
+  0%,100%{box-shadow:0 0 0 0 rgba(209,0,30,.6)}60%{box-shadow:0 0 0 7px transparent}
+}
+.ls-brand {
+  font-family:var(--f1);
+  font-size:clamp(4.8rem,6.5vw,8.8rem);
+  font-weight:700; letter-spacing:20px; line-height:1; margin-bottom:4px;
+  background:linear-gradient(135deg,
+    var(--snow) 0%,var(--snow) 25%,
+    var(--r) 42%,var(--snow) 58%,
+    var(--gold) 74%,var(--snow) 90%);
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:brandShine 8s linear infinite;
+}
+.ls-tag {
+  font-family:var(--f3); font-size:.62rem; letter-spacing:5.5px;
+  color:var(--mist); text-transform:uppercase; margin-bottom:52px;
+  transition:color .4s;
+}
+.ls-div {
+  width:0; height:1px; margin:0 auto 52px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:divGrow 2.2s 1.2s var(--e3) forwards;
+}
+@keyframes divGrow { to{width:180px} }
+
+.ls-specs { display:flex; gap:48px; }
+.ls-spec-v {
+  font-family:var(--f1); font-size:2.6rem; font-weight:600; line-height:1; margin-bottom:7px;
+  transition:color .4s;
+}
+.ls-spec-v.red  { color:var(--r); }
+.ls-spec-v.gold { color:var(--gold); }
+.ls-spec-l {
+  font-family:var(--f3); font-size:.52rem; letter-spacing:3px;
+  color:var(--mist); text-transform:uppercase;
+  transition:color .4s;
+}
+
+.ls-clock {
+  position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px; z-index:6; white-space:nowrap;
+  animation:fadeUp .8s 1s var(--e3) both;
+}
+.ls-clock-t { font-family:var(--f3); font-size:.7rem; font-weight:500; color:var(--fog); letter-spacing:2.5px; }
+.ls-clock-s { width:1px; height:13px; background:var(--brd); }
+.ls-clock-d { font-family:var(--f3); font-size:.62rem; color:var(--mist); letter-spacing:1.5px; }
+
+/* ═══════════════════════════════════════════
+   RIGHT  —  FORM PANEL
+═══════════════════════════════════════════ */
+.lp {
+  position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  padding:80px 56px;
+  background:var(--bg3);
+  transition:background .45s var(--e1);
+}
+.lp::before {
+  content:''; position:absolute;
+  top:-350px; right:-350px; width:750px; height:750px; border-radius:50%;
+  background:radial-gradient(circle,rgba(209,0,30,.065),transparent 65%);
+  pointer-events:none; z-index:0;
+}
+.lp::after {
+  content:''; position:absolute;
+  bottom:-200px; left:-200px; width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle,rgba(201,170,70,.04),transparent 65%);
+  pointer-events:none; z-index:0;
+}
+
+/* ── CARD ── */
+.lcard {
+  position:relative; z-index:2; width:100%; max-width:400px;
+}
+.lcard::before {
+  content:''; position:absolute;
+  top:-1px; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--r),var(--gold),var(--r),transparent);
+  opacity:.5; border-radius:1px;
+}
+
+/* ── FORM BOXES ── */
+.fb { display:none; flex-direction:column; animation:fbIn .38s var(--e3); }
+.fb.on { display:flex; }
+@keyframes fbIn {
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to  {opacity:1;transform:none}
+}
+
+/* form header */
+.fhd { margin-bottom:38px; }
+.fhd-eye {
+  display:block; font-family:var(--f3); font-size:.54rem; letter-spacing:4.5px;
+  color:var(--r); text-transform:uppercase; margin-bottom:12px;
+}
+.fhd h2 {
+  font-family:var(--f1);
+  font-size:clamp(2.4rem,3vw,3.5rem);
+  font-weight:600; line-height:1.02; letter-spacing:-.3px;
+  color:var(--snow); margin-bottom:10px;
+  transition:color .4s;
+}
+.fhd h2 em { font-style:italic; color:var(--r); }
+.fhd p { font-size:.82rem; font-weight:300; color:var(--mist); line-height:1.75; transition:color .4s; }
+
+/* ── FIELDS ── */
+.fi { position:relative; margin-bottom:18px; }
+.fi input {
+  width:100%; height:60px;
+  padding:26px 50px 10px 19px;
+  background:var(--surf); border:1px solid var(--brd);
+  border-radius:14px; color:var(--snow);
+  font-family:var(--f2); font-size:.88rem; font-weight:400;
+  outline:none; appearance:none;
+  transition:all var(--t);
+}
+[dir=rtl] .fi input { padding:26px 19px 10px 50px; }
+.fi input::placeholder { color:transparent; }
+.fi input:focus {
+  border-color:rgba(209,0,30,.65);
+  background:rgba(209,0,30,.04);
+  box-shadow:0 0 0 3px rgba(209,0,30,.1), inset 0 0 24px rgba(209,0,30,.02);
+}
+.fi input.err { border-color:rgba(255,50,68,.65); }
+.fi input:focus.err { border-color:rgba(255,50,68,.65); box-shadow:0 0 0 3px rgba(255,50,68,.12); }
+
+/* floating label */
+.fi label {
+  position:absolute; top:50%; left:19px; transform:translateY(-50%);
+  font-size:.83rem; color:var(--mist); pointer-events:none;
+  transition:all .2s var(--e1);
+}
+[dir=rtl] .fi label { left:auto; right:19px; }
+.fi input:focus ~ label,
+.fi input:not(:placeholder-shown) ~ label {
+  top:12px; font-size:.5rem; font-weight:600;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--r); transform:none;
+}
+
+/* field icon */
+.fii {
+  position:absolute; top:50%; right:18px; transform:translateY(-50%);
+  font-size:.76rem; color:var(--mist); pointer-events:none; z-index:2;
+  transition:color var(--t);
+}
+[dir=rtl] .fii { right:auto; left:18px; }
+.fi:focus-within .fii { color:var(--r); }
+
+/* eye button */
+.fi-eye {
+  position:absolute; top:50%; right:16px; transform:translateY(-50%);
+  color:var(--mist); font-size:.78rem; padding:8px; z-index:3;
+  cursor:none; transition:color var(--t);
+}
+.fi-eye:hover { color:var(--r); }
+[dir=rtl] .fi-eye { right:auto; left:16px; }
+@media(hover:none),(pointer:coarse){ .fi-eye { cursor:pointer; } }
+
+/* error */
+.ferr {
+  display:block; font-family:var(--f3); font-size:.64rem;
+  color:#ff4050; padding:5px 4px 0; min-height:22px; letter-spacing:.4px;
+}
+
+/* ── PASSWORD STRENGTH ── */
+.str { display:flex; align-items:center; gap:10px; margin:-4px 0 16px; }
+.str-tr { flex:1; height:2px; background:var(--brd); border-radius:2px; overflow:hidden; }
+.str-fi { height:100%; width:0; border-radius:2px; transition:width .4s,background .4s; }
+.str-lb {
+  font-family:var(--f3); font-size:.6rem; font-weight:500;
+  min-width:46px; text-align:right; color:var(--mist);
+}
+
+/* ── OPTIONS ROW ── */
+.opts {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:26px; gap:8px; flex-wrap:wrap;
+}
+.chkrow { display:flex; align-items:center; gap:9px; cursor:none; user-select:none; }
+@media(hover:none),(pointer:coarse){ .chkrow { cursor:pointer; } }
+.chkrow input { display:none; }
+.chkbox {
+  width:18px; height:18px; border-radius:6px;
+  border:1px solid var(--brd); background:var(--surf);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:all var(--t);
+}
+.chkrow input:checked + .chkbox { background:var(--r); border-color:var(--r); box-shadow:0 0 14px var(--rg); }
+.chkbox::after { content:'✓'; font-size:.6rem; color:#fff; opacity:0; transform:scale(0); transition:all .15s; }
+.chkrow input:checked + .chkbox::after { opacity:1; transform:scale(1); }
+.chkrow > span { font-size:.78rem; color:var(--mist); }
+.fgl {
+  font-family:var(--f3); font-size:.64rem; font-weight:500;
+  letter-spacing:1px; color:var(--r); text-transform:uppercase;
+  cursor:none; transition:opacity var(--t);
+}
+.fgl:hover { opacity:.55; }
+@media(hover:none),(pointer:coarse){ .fgl { cursor:pointer; } }
+
+/* ── SUBMIT BUTTON ── */
+.sbtn {
+  position:relative; width:100%; height:58px;
+  border-radius:14px; overflow:hidden;
+  background:linear-gradient(135deg,var(--r) 0%,var(--r2) 100%);
+  color:#fff; font-family:var(--f2); font-size:.9rem; font-weight:600; letter-spacing:.3px;
+  cursor:none; display:flex; align-items:center; justify-content:center; gap:11px;
+  box-shadow:0 8px 34px var(--rg); margin-top:8px;
+  transition:transform .25s var(--e2), box-shadow .25s;
+}
+@media(hover:none),(pointer:coarse){ .sbtn { cursor:pointer; } }
+.sbtn::before {
+  content:''; position:absolute; top:0; left:-140%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transform:skewX(-14deg); transition:left .65s var(--e1);
+}
+.sbtn:hover::before { left:180%; }
+.sbtn::after {
+  content:''; position:absolute; bottom:0; left:20%; right:20%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0; transition:opacity .3s;
+}
+.sbtn:hover::after { opacity:.9; }
+.sbtn:hover { transform:translateY(-3px); box-shadow:0 14px 52px var(--rgH); }
+.sbtn:active { transform:scale(.97); }
+.sbtn:disabled { opacity:.55; transform:none !important; pointer-events:none; }
+.sbtn i { font-size:.82rem; }
+
+/* ── SWITCH TEXT ── */
+.swp { text-align:center; margin-top:26px; font-size:.8rem; color:var(--mist); }
+.swp a { color:var(--r); font-weight:600; cursor:none; transition:color var(--t); }
+.swp a:hover { color:var(--gold); }
+@media(hover:none),(pointer:coarse){ .swp a { cursor:pointer; } }
+
+/* ── SUCCESS ── */
+#sucBox { align-items:center; text-align:center; padding:16px 0; }
+.suc-orbit { position:relative; width:96px; height:96px; margin:0 auto 32px; animation:sucIn .6s var(--e3); }
+@keyframes sucIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.suc-r1 { position:absolute; inset:0; border-radius:50%; border:1.5px solid var(--r); }
+.suc-r2 { position:absolute; inset:-13px; border-radius:50%; border:1px solid rgba(209,0,30,.2); animation:orbitSpin1 6s linear infinite; }
+.suc-r3 { position:absolute; inset:-27px; border-radius:50%; border:1px dashed rgba(201,170,70,.18); animation:orbitSpin2 9s linear infinite reverse; }
+@keyframes orbitSpin1 { to{transform:rotate(360deg)} }
+@keyframes orbitSpin2 { to{transform:rotate(360deg)} }
+.suc-chk {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:2rem; color:var(--r); animation:chkPop .5s .25s var(--e2) both;
+}
+@keyframes chkPop { from{transform:scale(0)rotate(-15deg);opacity:0} to{transform:scale(1)rotate(0);opacity:1} }
+#sucBox h2 {
+  font-family:var(--f1); font-size:2.9rem; font-weight:600; letter-spacing:-.2px;
+  margin-bottom:6px; color:var(--snow); animation:fadeUp .6s .35s var(--e3) both;
+}
+.suc-name { font-family:var(--f3); font-size:.88rem; letter-spacing:1.2px; color:var(--gold); margin-bottom:10px; animation:fadeUp .6s .42s var(--e3) both; }
+.suc-sub  { font-size:.82rem; font-weight:300; color:var(--mist); line-height:1.78; margin-bottom:36px; animation:fadeUp .6s .48s var(--e3) both; }
+.go-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  height:52px; padding:0 36px; border-radius:50px;
+  background:linear-gradient(135deg,var(--r),var(--r2));
+  color:#fff; font-family:var(--f2); font-size:.9rem; font-weight:600;
+  border:none; cursor:none; position:relative; overflow:hidden;
+  box-shadow:0 8px 32px var(--rg); transition:all .3s var(--e2);
+  animation:fadeUp .6s .56s var(--e3) both;
+}
+@media(hover:none),(pointer:coarse){ .go-btn { cursor:pointer; } }
+.go-btn::before {
+  content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transform:skewX(-14deg); transition:left .6s;
+}
+.go-btn:hover::before { left:160%; }
+.go-btn:hover { transform:translateY(-3px) scale(1.04); box-shadow:0 14px 44px var(--rgH); }
+
+/* ── TOAST ── */
+#NVT {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%) translateY(16px);
+  padding:14px 28px; border-radius:16px;
+  font-family:var(--f3); font-size:.76rem; font-weight:500; letter-spacing:.3px;
+  opacity:0; pointer-events:none; white-space:nowrap;
+  z-index:9999; color:#fff; border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(24px); box-shadow:0 16px 52px rgba(0,0,0,.75);
+  transition:all .38s var(--e3); max-width:92vw;
+}
+#NVT.show { opacity:1; transform:translateX(-50%) translateY(0); }
+#NVT.ok  { background:rgba(4,112,52,.94); }
+#NVT.err { background:rgba(156,0,20,.94); }
+#NVT.inf { background:rgba(12,52,156,.94); }
+
+/* ── RTL adjustments ── */
+[dir=rtl] .opts { flex-direction:row-reverse; }
+[dir=rtl] .fbIn { animation-name:fbInRtl; }
+@keyframes fbInRtl {
+  from{opacity:0;transform:translateX(18px) scale(.97)} to{opacity:1;transform:none}
+}
+[dir=rtl] .swp { direction:rtl; }
+[dir=rtl] .lnav-btns { flex-direction:row-reverse; }
+[dir=rtl] .suc-orbit { direction:ltr; }
+
+/* ── Lang slide animation ── */
+.lang-sliding .lcard,
+.lang-sliding .ls-cnt { animation:langSlide .32s var(--e3); }
+@keyframes langSlide { from{opacity:.6;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+/* ── HELPERS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:920px) {
+  .lw { grid-template-columns:1fr; }
+  .ls { min-height:280px; border-bottom:1px solid var(--brd); }
+  .ls-cnt { padding:90px 28px 56px; }
+  .ls-brand { font-size:clamp(3rem,10vw,5rem); letter-spacing:12px; }
+  .ls-specs { gap:26px; }
+  .lp { padding:48px 28px 64px; }
+  .lnav { padding:0 20px; }
+  .lnav-links { display:none; }
+}
+@media(max-width:480px) {
+  .lp { padding:32px 18px 52px; }
+  .lcard { max-width:100%; }
+  .ls-specs { gap:18px; }
+  .ls-spec-v { font-size:2rem; }
+}
+</style>
+<script>
+/* ══ Standalone theme & lang — work instantly ══ */
+(function(){
+  /* Apply saved theme immediately to prevent flash */
+  var th=localStorage.getItem('nv_theme');
+  if(!th) th=window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';
+  if(th==='light') document.documentElement.classList.add('nv-light-pre');
+})();
+
+function _nvToggleTheme(){
+  var next=(localStorage.getItem('nv_theme')||'dark')==='dark'?'light':'dark';
+  localStorage.setItem('nv_theme',next);
+  document.body.classList.toggle('light',next==='light');
+  var btn=document.getElementById('themeBtn');
+  if(btn){var i=btn.querySelector('i');if(i)i.className=next==='light'?'fas fa-moon':'fas fa-sun';}
+  var btn2=document.querySelector('.lnav-btn.spinning');
+  document.querySelectorAll('.lnav-btn').forEach(function(b){
+    if(b.id==='themeBtn'){b.classList.add('spinning');setTimeout(function(){b.classList.remove('spinning');},420);}
+  });
+  var t=document.getElementById('NVT');
+  if(t){t.textContent=next==='light'?'☀️ Light mode':'🌙 Dark mode';t.className='show inf';setTimeout(function(){t.className=''},1600);}
+}
+
+function _nvToggleLang(){
+  var next=(localStorage.getItem('nv_lang')||'en')==='en'?'ar':'en';
+  localStorage.setItem('nv_lang',next);
+  document.documentElement.lang=next;
+  document.documentElement.dir=next==='ar'?'rtl':'ltr';
+  if(typeof applyLang==='function') applyLang(true);
+  else {
+    document.querySelectorAll('.btn-lbl').forEach(function(s){
+      s.textContent=next==='ar'?' EN':' AR';
+    });
+  }
+  var lb=document.getElementById('langBtn');
+  if(lb){lb.classList.add('pulsing');setTimeout(function(){lb.classList.remove('pulsing');},360);}
+  var t=document.getElementById('NVT');
+  if(t){
+    t.textContent=next==='ar'?'🌐 تم التبديل إلى العربية':'🌐 Switched to English';
+    t.className='show ok';setTimeout(function(){t.className=''},1800);
+  }
+}
+/* ══════════════════════════════════════════════════════════
+   SMART BACKGROUND MUSIC SYSTEM (NeViS)
+══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const bgMusic = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicToggle');
+
+  if (bgMusic && musicBtn) {
+    // 1. التحقق من وضع الموقع (عادي ولا رمضان)
+    const mode = localStorage.getItem('nv_mode') || 'normal';
+
+    if (mode === 'ramadan') {
+      // إيقاف وإخفاء الموسيقى في وضع رمضان
+      bgMusic.pause();
+      musicBtn.style.display = 'none';
+    } else {
+      // 2. استرجاع وقت الأغنية وحالة الصوت عند الانتقال بين الصفحات
+      const savedTime = sessionStorage.getItem('nv_music_time') || 0;
+      const isMuted = sessionStorage.getItem('nv_music_muted') === 'true';
+
+      bgMusic.currentTime = parseFloat(savedTime);
+      bgMusic.volume = 0.5; // تقدر تغير مستوى الصوت من هنا (0.0 إلى 1.0)
+
+      if (isMuted) {
+        bgMusic.pause();
+        musicBtn.classList.add('muted');
+      } else {
+        // محاولة التشغيل التلقائي (هتشتغل بسلاسة لأن المستخدم داس على زرار في صفحة Welcome)
+        bgMusic.play().catch(() => {
+          musicBtn.classList.add('muted'); // لو المتصفح منعها، نظهرها كمكتومة
+        });
+      }
+
+      // 3. تشغيل/إيقاف الموسيقى عند الضغط على الزر
+      musicBtn.addEventListener('click', () => {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          musicBtn.classList.remove('muted');
+          sessionStorage.setItem('nv_music_muted', 'false');
+        } else {
+          bgMusic.pause();
+          musicBtn.classList.add('muted');
+          sessionStorage.setItem('nv_music_muted', 'true');
+        }
+      });
+
+      // 4. حفظ مكان الأغنية قبل ما المستخدم يروح لصفحة تانية!
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.setItem('nv_music_time', bgMusic.currentTime);
+      });
+    }
+  }
+});
+</script>
+<script>
+/* ── Apply saved theme & lang BEFORE paint to prevent flash ── */
+(function(){
+  var th=localStorage.getItem('nv_theme')||'dark';
+  var os=window.matchMedia('(prefers-color-scheme:light)').matches;
+  if(!localStorage.getItem('nv_theme')) th=os?'light':'dark';
+  if(th==='light') document.documentElement.classList.add('nv-light-pre');
+})();
+</script>
+<script>
+/* ── Mode guard: redirect to welcome.html if no mode set ── */
+(function(){
+  if(!localStorage.getItem('nv_mode')){
+    sessionStorage.setItem('nv_ref', location.href.split('/').pop()||'home.html');
+    location.replace('welcome.html');
+  }
+})();
+</script>
+
+</head>
+<body>
+
+<div id="nv-theme-flash"></div>
+
+<div id="nv-shortcuts-backdrop" onclick="hideShortcuts()"></div>
+<div id="nv-shortcuts">
+  <button class="sc-close" onclick="hideShortcuts()"><i class="fas fa-xmark"></i></button>
+  <h3>Keyboard Shortcuts</h3>
+  <div class="sc-row"><span class="sc-key">T</span><span class="sc-desc">Toggle dark / light mode</span></div>
+  <div class="sc-row"><span class="sc-key">L</span><span class="sc-desc">Toggle language EN / AR</span></div>
+  <div class="sc-row"><span class="sc-key">?</span><span class="sc-desc">Show / hide this panel</span></div>
+  <div class="sc-row"><span class="sc-key">Esc</span><span class="sc-desc">Close panel</span></div>
+</div>
+
+<div id="NVL">
+  <div class="nl-logo">N<b>E</b>VIS</div>
+  <div class="nl-track"><div class="nl-fill"></div></div>
+  <div class="nl-id" id="nl_id">LOADING NEVIS_G10 PORTAL...</div>
+</div>
+
+<div id="NVC">
+  <div class="cv-d" id="cvD"></div>
+  <div class="cv-r" id="cvR"></div>
+</div>
+
+<nav class="nv-nav-mobile" aria-label="Mobile navigation">
+  <a href="home.html" class="active"><span data-i18n="nav.home">Home</span></a>
+  <a href="about.html"><span data-i18n="nav.about">About</span></a>
+  <a href="skills.html"><span data-i18n="nav.skills">Skills</span></a>
+  <a href="any_links.html"><span data-i18n="nav.links">Links</span></a>
+  <div class="mob-row">
+    <button class="nv-btn nv-mode-btn" onclick="window.location.href='welcome.html'"><i class="fas fa-gear"></i></button>
+    <button class="nv-btn nv-lang-btn" onclick="_nvToggleLang()">
+      <i class="fas fa-language"></i><span class="btn-lbl"> AR</span>
+    </button>
+    <button class="nv-btn nv-theme-btn" onclick="_nvToggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+
+<nav class="lnav" id="lnav">
+  <a href="home.html" class="lnav-logo" style="-webkit-text-fill-color:transparent">NEVIS</a>
+  <div class="lnav-links">
+    <a href="home.html" id="nav_home">Home</a>
+    <a href="about.html" id="nav_about">About</a>
+    <a href="skills.html" id="nav_skills">Skills</a>
+    <a href="any_links.html" id="nav_links">Links</a>
+  </div>
+  <div class="lnav-btns">
+    <button class="nv-btn nv-mode-btn" id="modeBtn" onclick="window.location.href='index.html'" title="Change experience mode">
+      <i class="fas fa-gear"></i>
+    <button class="lnav-btn" id="langBtn" title="Switch language (L)">
+      <i class="fas fa-language"></i><span class="btn-lbl"> AR</span>
+    </button>
+    <button class="lnav-btn" id="themeBtn" title="Toggle theme (T)">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="lw">
+
+  <div class="ls">
+    <div class="ls-bar"></div>
+    <canvas id="stageCv"></canvas>
+    <div class="ls-scan"></div>
+    <div class="lc tl"></div><div class="lc tr"></div>
+    <div class="lc bl"></div><div class="lc br"></div>
+    <div class="ls-cnt">
+      <div class="ls-badge"><div class="pdot"></div><span id="t_badge">Nevis_G10 — Members Portal</span></div>
+      <h1 class="ls-brand">NEVIS</h1>
+      <p class="ls-tag" id="t_tag">Gaming · Anime · Programming</p>
+      <div class="ls-div"></div>
+      <div class="ls-specs">
+        <div class="ls-spec">
+          <div class="ls-spec-v red">YT</div>
+          <div class="ls-spec-l" id="t_s1">@Nevis_G10</div>
+        </div>
+        <div class="ls-spec">
+          <div class="ls-spec-v gold">100%</div>
+          <div class="ls-spec-l" id="t_s2">Passion</div>
+        </div>
+        <div class="ls-spec">
+          <div class="ls-spec-v">🎮</div>
+          <div class="ls-spec-l" id="t_s3">Gaming · Anime</div>
+        </div>
+      </div>
+    </div>
+    <div class="ls-clock">
+      <span class="ls-clock-t" id="cTime">--:--:--</span>
+      <div class="ls-clock-s"></div>
+      <span class="ls-clock-d" id="cDate">---</span>
+    </div>
+  </div>
+
+  <div class="lp">
+    <div class="lcard">
+
+      <div class="fb on" id="boxLogin">
+        <div class="fhd">
+          <span class="fhd-eye" id="t_loginEye">Authentication</span>
+          <h2>Welcome <em id="t_loginEm">Back.</em></h2>
+          <p id="t_loginSub">Sign in to access your secure account</p>
+        </div>
+        <form id="formLogin" novalidate>
+          <div class="fi">
+            <input type="email" id="lMail" placeholder="e" required autocomplete="email"/>
+            <label for="lMail" id="t_lMail">Email Address</label>
+            <i class="fas fa-envelope fii"></i>
+            <span class="ferr" id="lMailErr"></span>
+          </div>
+          <div class="fi">
+            <input type="password" id="lPwd" placeholder="p" required autocomplete="current-password"/>
+            <label for="lPwd" id="t_lPwd">Password</label>
+            <button type="button" class="fi-eye" data-f="lPwd"><i class="fas fa-eye"></i></button>
+            <span class="ferr" id="lPwdErr"></span>
+          </div>
+          <div class="opts">
+            <label class="chkrow">
+              <input type="checkbox" id="remMe"/>
+              <span class="chkbox"></span>
+              <span id="t_rem">Remember me</span>
+            </label>
+            <a class="fgl" href="#" id="toForgot"><span id="t_fgt">Forgot?</span></a>
+          </div>
+          <button type="submit" class="sbtn">
+            <span id="t_loginBtn">Sign In</span><i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+        <p class="swp">
+          <span id="t_noAcc">No account?</span>
+          <a href="#" id="toReg"> <span id="t_reg">Create one</span></a>
+        </p>
+      </div>
+
+      <div class="fb" id="boxReg">
+        <div class="fhd">
+          <span class="fhd-eye" id="t_regEye">New Account</span>
+          <h2><span id="t_regH">Create</span> <em id="t_regEm">Account.</em></h2>
+          <p id="t_regSub">Join the Nevis_G10 community</p>
+        </div>
+        <form id="formReg" novalidate>
+          <div class="fi">
+            <input type="text" id="rName" placeholder="n" required autocomplete="username"/>
+            <label for="rName" id="t_rName">Username</label>
+            <i class="fas fa-user fii"></i>
+            <span class="ferr" id="rNameErr"></span>
+          </div>
+          <div class="fi">
+            <input type="email" id="rMail" placeholder="e" required autocomplete="email"/>
+            <label for="rMail" id="t_rMail">Email Address</label>
+            <i class="fas fa-envelope fii"></i>
+            <span class="ferr" id="rMailErr"></span>
+          </div>
+          <div class="fi">
+            <input type="password" id="rPwd" placeholder="p" required autocomplete="new-password"/>
+            <label for="rPwd" id="t_rPwd">Password</label>
+            <button type="button" class="fi-eye" data-f="rPwd"><i class="fas fa-eye"></i></button>
+            <span class="ferr" id="rPwdErr"></span>
+          </div>
+          <div class="str">
+            <div class="str-tr"><div class="str-fi" id="strFi"></div></div>
+            <span class="str-lb" id="strLb"></span>
+          </div>
+          <div class="fi">
+            <input type="password" id="rCon" placeholder="c" required autocomplete="new-password"/>
+            <label for="rCon" id="t_rCon">Confirm Password</label>
+            <button type="button" class="fi-eye" data-f="rCon"><i class="fas fa-eye"></i></button>
+            <span class="ferr" id="rConErr"></span>
+          </div>
+          <label class="chkrow" style="margin-bottom:22px">
+            <input type="checkbox" id="agreeChk"/>
+            <span class="chkbox"></span>
+            <span id="t_terms">I agree to the Terms &amp; Conditions</span>
+          </label>
+          <button type="submit" class="sbtn">
+            <span id="t_regBtn">Create Account</span><i class="fas fa-user-plus"></i>
+          </button>
+        </form>
+        <p class="swp">
+          <span id="t_hasAcc">Already registered?</span>
+          <a href="#" id="toLogin"> <span id="t_loginLink">Sign in</span></a>
+        </p>
+      </div>
+
+      <div class="fb" id="boxFgt">
+        <div class="fhd">
+          <span class="fhd-eye" id="t_fgtEye">Recovery</span>
+          <h2><span id="t_fgtH">Reset</span> <em id="t_fgtEm">Password.</em></h2>
+          <p id="t_fgtSub">We'll send a secure reset link to your inbox</p>
+        </div>
+        <form id="formFgt" novalidate>
+          <div class="fi">
+            <input type="email" id="fMail" placeholder="e" required/>
+            <label for="fMail" id="t_fMail">Email Address</label>
+            <i class="fas fa-envelope fii"></i>
+            <span class="ferr" id="fMailErr"></span>
+          </div>
+          <button type="submit" class="sbtn">
+            <span id="t_fgtBtn">Send Reset Link</span><i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+        <p class="swp">
+          <a href="#" id="backLogin"><span id="t_backLogin">← Back to Login</span></a>
+        </p>
+      </div>
+
+      <div class="fb" id="sucBox">
+        <div class="suc-orbit">
+          <div class="suc-r1"></div>
+          <div class="suc-r2"></div>
+          <div class="suc-r3"></div>
+          <div class="suc-chk"><i class="fas fa-check"></i></div>
+        </div>
+        <h2 id="t_sucTitle">Welcome.</h2>
+        <p class="suc-name" id="sucName"></p>
+        <p class="suc-sub" id="t_sucSub">Authentication successful — access granted.</p>
+        <button class="go-btn" id="goBtn">
+          <span id="t_goBtn">Go to Home</span><i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div></div></div><div id="NVT"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   NeViS · Login v4 · Full Script
+   Fixes: cursor, light mode, RTL slide, OS theme,
+          keyboard shortcuts, icon prefixes
+═══════════════════════════════════════════════════ */
+const K = { AUTH:'nv_auth', USERS:'nv_users', THEME:'nv_theme', LANG:'nv_lang', TOKEN:'nv_token' };
+const API = 'http://localhost:5000/api';
+
+/* ════════════════════════════════════════
+   TRANSLATION DICTIONARY
+════════════════════════════════════════ */
+const TR = {
+  en:{
+    t_badge:'Nevis_G10 — Members Portal',
+    t_tag:'Gaming · Anime · Programming',
+    t_s1:'@Nevis_G10', t_s2:'Passion', t_s3:'Gaming · Anime',
+    t_loginEye:'Authentication', t_loginEm:'Back.',
+    t_loginSub:'Sign in to access your secure account',
+    t_lMail:'Email Address', t_lPwd:'Password',
+    t_rem:'Remember me', t_fgt:'Forgot?',
+    t_loginBtn:'Sign In',
+    t_noAcc:'No account?', t_reg:'Create one',
+    t_regEye:'New Account', t_regH:'Create', t_regEm:'Account.',
+    t_regSub:'Join the Nevis_G10 community',
+    t_rName:'Username', t_rMail:'Email Address',
+    t_rPwd:'Password', t_rCon:'Confirm Password',
+    t_terms:'I agree to the Terms & Conditions',
+    t_regBtn:'Create Account',
+    t_hasAcc:'Already registered?', t_loginLink:'Sign in',
+    t_fgtEye:'Recovery', t_fgtH:'Reset', t_fgtEm:'Password.',
+    t_fgtSub:"We'll send a secure reset link to your inbox",
+    t_fMail:'Email Address',
+    t_fgtBtn:'Send Reset Link', t_backLogin:'← Back to Login',
+    t_sucTitle:'Welcome.', t_sucSub:'Authentication successful — access granted.',
+    t_goBtn:'Go to Home',
+    str_w:'Weak', str_f:'Fair', str_g:'Good', str_s:'Strong',
+    ok_created:'Account created ✔', ok_reset:'Reset link sent 📧',
+    ok_logout:'Logged out.',
+    e_fill:'Please fill in all fields.', e_email:'Enter a valid email.',
+    e_pass:'Min 8 chars: uppercase, lowercase & number.',
+    e_match:'Passwords do not match.',
+    e_terms:'Please accept the Terms & Conditions.',
+    e_taken:'Email already registered.',
+    e_creds:'Invalid email or password.',
+    nl_id:'LOADING NEVIS_G10 PORTAL...',
+    nav_home:'Home', nav_about:'About', nav_skills:'Skills', nav_links:'Links',
+  },
+  ar:{
+    t_badge:'بوابة مجتمع Nevis_G10',
+    t_tag:'ألعاب · أنمي · برمجة',
+    t_s1:'@Nevis_G10', t_s2:'شغف', t_s3:'ألعاب · أنمي',
+    t_loginEye:'المصادقة', t_loginEm:'بعودتك.',
+    t_loginSub:'سجّل دخولك للوصول إلى حسابك',
+    t_lMail:'البريد الإلكتروني', t_lPwd:'كلمة المرور',
+    t_rem:'تذكّرني', t_fgt:'نسيت؟',
+    t_loginBtn:'دخول',
+    t_noAcc:'ليس لديك حساب؟', t_reg:'إنشاء حساب',
+    t_regEye:'حساب جديد', t_regH:'إنشاء', t_regEm:'حساب.',
+    t_regSub:'انضم إلى مجتمع Nevis_G10',
+    t_rName:'اسم المستخدم', t_rMail:'البريد الإلكتروني',
+    t_rPwd:'كلمة المرور', t_rCon:'تأكيد كلمة المرور',
+    t_terms:'أوافق على الشروط والأحكام',
+    t_regBtn:'إنشاء الحساب',
+    t_hasAcc:'لديك حساب بالفعل؟', t_loginLink:'تسجيل الدخول',
+    t_fgtEye:'الاسترداد', t_fgtH:'إعادة تعيين', t_fgtEm:'كلمة المرور.',
+    t_fgtSub:'سنرسل رابط إعادة تعيين آمن إلى بريدك',
+    t_fMail:'البريد الإلكتروني',
+    t_fgtBtn:'إرسال رابط الاسترداد', t_backLogin:'→ العودة للدخول',
+    t_sucTitle:'أهلاً بك.', t_sucSub:'تمت المصادقة بنجاح.',
+    t_goBtn:'الذهاب للرئيسية',
+    str_w:'ضعيفة', str_f:'مقبولة', str_g:'جيدة', str_s:'قوية',
+    ok_created:'تم إنشاء الحساب ✔', ok_reset:'تم إرسال رابط الاسترداد 📧',
+    ok_logout:'تم تسجيل الخروج.',
+    e_fill:'يرجى ملء جميع الحقول.', e_email:'يرجى إدخال بريد إلكتروني صحيح.',
+    e_pass:'8 أحرف على الأقل: كبيرة وصغيرة وأرقام.',
+    e_match:'كلمتا المرور غير متطابقتين.',
+    e_terms:'يرجى الموافقة على الشروط.',
+    e_taken:'البريد مسجّل مسبقاً.',
+    e_creds:'البريد أو كلمة المرور غير صحيحة.',
+    nl_id:'تحميل بوابة Nevis_G10...',
+    nav_home:'الرئيسية', nav_about:'من أنا', nav_skills:'المهارات', nav_links:'الروابط',
+  }
+};
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let lang  = localStorage.getItem(K.LANG)  || 'en';
+let theme = localStorage.getItem(K.THEME) || null; /* null = not set yet */
+const t = k => TR[lang]?.[k] ?? TR.en[k] ?? k;
+
+/* ── OS theme detection (first visit only) ── */
+if (!theme) {
+  theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  localStorage.setItem(K.THEME, theme);
+}
+
+/* ════════════════════════════════════════
+   TRANSLATION
+════════════════════════════════════════ */
+const TEXT_IDS = [
+  't_badge','t_tag','t_s1','t_s2','t_s3',
+  't_loginEye','t_loginEm','t_loginSub','t_lMail','t_lPwd',
+  't_rem','t_fgt','t_loginBtn','t_noAcc','t_reg',
+  't_regEye','t_regH','t_regEm','t_regSub',
+  't_rName','t_rMail','t_rPwd','t_rCon','t_terms','t_regBtn',
+  't_hasAcc','t_loginLink','t_fgtEye','t_fgtH','t_fgtEm','t_fgtSub',
+  't_fMail','t_fgtBtn','t_backLogin',
+  't_sucTitle','t_sucSub','t_goBtn','nl_id',
+  'nav_home','nav_about','nav_skills','nav_links',
+];
+const PH_MAP = {
+  lMail:'t_lMail', lPwd:'t_lPwd', rName:'t_rName',
+  rMail:'t_rMail', rPwd:'t_rPwd', rCon:'t_rCon', fMail:'t_fMail',
+};
+
+function applyLang(animate = false) {
+  const ar = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = ar ? 'rtl' : 'ltr';
+
+  /* Update nav link text using IDs */
+  const navMap = { nav_home:'nav_home', nav_about:'nav_about', nav_skills:'nav_skills', nav_links:'nav_links' };
+  ['nav_home','nav_about','nav_skills','nav_links'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(id);
+  });
+
+  /* Update all text IDs */
+  TEXT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(id);
+  });
+
+  /* Update placeholders */
+  Object.entries(PH_MAP).forEach(([inputId, key]) => {
+    const el = document.getElementById(inputId);
+    if (el) el.placeholder = t(key);
+  });
+
+  /* Lang button label — ONLY update .btn-lbl, never icon */
+  const lb = document.getElementById('langBtn');
+  if (lb) {
+    const lbl = lb.querySelector('.btn-lbl');
+    if (lbl) { lbl.textContent = ar ? ' EN' : ' AR'; }
+    else {
+      const ico = lb.querySelector('i');
+      const icoC = ico ? ico.cloneNode(true) : null;
+      lb.innerHTML = '';
+      if (icoC) lb.appendChild(icoC);
+      const sp = document.createElement('span');
+      sp.className = 'btn-lbl'; sp.textContent = ar ? ' EN' : ' AR';
+      lb.appendChild(sp);
+    }
+  }
+TEXT_IDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    // Check if the element has an icon child
+    const icon = el.querySelector('i');
+    if (icon) {
+      // If there's an icon, find the text node or a span and only change that
+      // Best practice: target a specific span or use a helper
+      const span = el.querySelector('span') || el; 
+      if(span !== el) span.textContent = t(id);
+    } else {
+      el.textContent = t(id);
+    }
+  }
+});
+  /* Slide animation */
+  if (animate) {
+    document.querySelector('.lw')?.classList.add('lang-sliding');
+    setTimeout(() => document.querySelector('.lw')?.classList.remove('lang-sliding'), 380);
+  }
+
+  renderStr();
+}
+/* Fix: Safely update only the text part of the language button */
+const lb = document.getElementById('langBtn');
+if (lb) {
+  let lbl = lb.querySelector('.btn-lbl');
+  if (!lbl) {
+    // If span doesn't exist, wrap the existing text or create it
+    lbl = document.createElement('span');
+    lbl.className = 'btn-lbl';
+    lb.appendChild(lbl);
+  }
+  lbl.textContent = (lang === 'ar') ? ' EN' : ' AR';
+}
+
+function toggleLang() {
+  const next = lang === 'en' ? 'ar' : 'en';
+  lang = next;
+  localStorage.setItem(K.LANG, lang);
+
+  /* Pulse the lang button */
+  const lb = document.getElementById('langBtn');
+  lb?.classList.add('pulsing');
+  setTimeout(() => lb?.classList.remove('pulsing'), 360);
+
+  applyLang(true);
+  toast('🌐 ' + (next === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English'), 'inf', 1600);
+}
+
+/* ════════════════════════════════════════
+   THEME
+════════════════════════════════════════ */
+function applyTheme(th, flash = false) {
+  theme = th;
+  localStorage.setItem(K.THEME, th);
+
+  const doSwitch = () => {
+    document.body.classList.toggle('light', th === 'light');
+    /* Update theme button icon — ONLY className, never innerHTML */
+    const btn = document.getElementById('themeBtn');
+    if (btn) {
+      const ico = btn.querySelector('i');
+      if (ico) ico.className = th === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+  };
+
+  if (flash) {
+    const fl = document.getElementById('nv-theme-flash');
+    if (fl) {
+      fl.classList.add('active');
+      setTimeout(() => { doSwitch(); fl.classList.remove('active'); }, 160);
+    } else {
+      doSwitch();
+    }
+  } else {
+    doSwitch();
+  }
+}
+
+function toggleTheme() {
+  const next = theme === 'dark' ? 'light' : 'dark';
+  /* Spin the icon */
+  const btn = document.getElementById('themeBtn');
+  btn?.classList.add('spinning');
+  setTimeout(() => btn?.classList.remove('spinning'), 420);
+
+  applyTheme(next);
+  toast(next === 'light' ? '☀️ Light mode' : '🌙 Dark mode', 'inf', 1400);
+}
+
+/* ════════════════════════════════════════
+   CURSOR — fixed independent children,
+   JS sets transform directly (no CSS conflict)
+════════════════════════════════════════ */
+(function startCursor() {
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const d = document.getElementById('cvD');
+  const r = document.getElementById('cvR');
+  if (!d || !r) return;
+
+  const DOT_HALF  = 5;   /* 10px / 2 */
+  const RING_HALF = 19;  /* 38px / 2 */
+  const LERP      = 0.1;
+
+  let mx = -300, my = -300, rx = -300, ry = -300;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+  const tick = () => {
+    rx += (mx - rx) * LERP;
+    ry += (my - ry) * LERP;
+    d.style.transform = `translate(${mx - DOT_HALF}px, ${my - DOT_HALF}px)`;
+    r.style.transform = `translate(${rx - RING_HALF}px, ${ry - RING_HALF}px)`;
+    requestAnimationFrame(tick);
+  };
+  tick();
+
+  const addHover    = () => document.body.classList.add('ch');
+  const removeHover = () => document.body.classList.remove('ch');
+
+  document.querySelectorAll('a,button,input,label,.ls-spec,.ls-badge,.chkrow').forEach(el => {
+    el.addEventListener('mouseenter', addHover);
+    el.addEventListener('mouseleave', removeHover);
+  });
+
+  document.addEventListener('mouseleave', () => { d.style.opacity = '0'; r.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { d.style.opacity = ''; r.style.opacity = ''; });
+})();
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+let _tt;
+function toast(msg, type = 'inf', dur = 3000) {
+  const el = document.getElementById('NVT');
+  if (!el) return;
+  clearTimeout(_tt);
+  el.textContent = msg; el.className = 'show ' + type;
+  _tt = setTimeout(() => el.className = '', dur);
+}
+
+/* ════════════════════════════════════════
+   PANEL SWITCH
+════════════════════════════════════════ */
+function show(id) {
+  document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('on');
+  clearErrs();
+}
+function clearErrs() {
+  ['lMailErr','lPwdErr','rNameErr','rMailErr','rPwdErr','rConErr','fMailErr'].forEach(id => {
+    const e = document.getElementById(id); if (e) e.textContent = '';
+    const inp = document.getElementById(id.replace('Err',''));
+    if (inp) inp.classList.remove('err');
+  });
+}
+function setErr(id, msg) {
+  const e = document.getElementById(id); if (e) e.textContent = msg;
+  const inp = document.getElementById(id.replace('Err',''));
+  if (inp) inp.classList.add('err');
+}
+
+/* ════════════════════════════════════════
+   CLOCK
+════════════════════════════════════════ */
+function startClock() {
+  const tick = () => {
+    const n  = new Date();
+    const ct = document.getElementById('cTime');
+    const cd = document.getElementById('cDate');
+    if (ct) ct.textContent = n.toLocaleTimeString('en-GB', { hour12:false });
+    if (cd) cd.textContent = n.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  };
+  tick(); setInterval(tick, 1000);
+}
+
+/* ════════════════════════════════════════
+   STAGE CANVAS
+════════════════════════════════════════ */
+function startCanvas() {
+  const cv = document.getElementById('stageCv'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const RC = 'rgba(209,0,30,', GC = 'rgba(201,170,70,';
+  let W, H;
+
+  const pts = Array.from({ length:75 }, (_,i) => ({
+    x:Math.random()*100, y:Math.random()*100,
+    vx:(Math.random()-.5)*.08, vy:(Math.random()-.5)*.08,
+    r:Math.random()*1.7+.3, a:Math.random()*.5+.07, g:i>66,
+  }));
+
+  const rings = [{r:80,sp:.0007,ph:0,d:[3,12]},{r:135,sp:-.0004,ph:1,d:[2,7]},{r:195,sp:.00025,ph:2,d:[5,18]}];
+  const od = [];
+  rings.forEach((rg,ri) => {
+    const n = ri*3+4;
+    for (let i=0;i<n;i++) od.push({ri,a:(i/n)*Math.PI*2,sp:rg.sp*(ri%2?-1.5:1)});
+  });
+
+  const resize = () => { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; };
+  resize();
+  new ResizeObserver(resize).observe(cv);
+
+  const draw = () => {
+    ctx.clearRect(0,0,W,H);
+    const cx=W/2,cy=H/2;
+
+    rings.forEach((rg,ri) => {
+      rg.ph += rg.sp;
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(rg.ph);
+      ctx.beginPath(); ctx.arc(0,0,rg.r,0,Math.PI*2);
+      ctx.strokeStyle = RC+(ri===0?.07:ri===1?.045:.025)+')';
+      ctx.lineWidth=.7; ctx.setLineDash(rg.d); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+    });
+
+    od.forEach(d => {
+      d.a += d.sp*2;
+      const rg=rings[d.ri];
+      const x=cx+Math.cos(d.a)*rg.r, y=cy+Math.sin(d.a)*rg.r;
+      ctx.beginPath(); ctx.arc(x,y,1.4,0,Math.PI*2);
+      ctx.fillStyle = d.ri===1?GC+'.45)':RC+'.5)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fillStyle = d.ri===1?GC+'.05)':RC+'.05)'; ctx.fill();
+    });
+
+    [[3.5,.6],[9,.12],[16,.055]].forEach(([r,a]) => {
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.strokeStyle=RC+a+')'; ctx.lineWidth=.5; ctx.stroke();
+    });
+    ctx.beginPath(); ctx.arc(cx,cy,2.2,0,Math.PI*2);
+    ctx.fillStyle=RC+'.7)'; ctx.fill();
+    ctx.strokeStyle=RC+'.16)'; ctx.lineWidth=.4;
+    ctx.beginPath(); ctx.moveTo(cx-20,cy); ctx.lineTo(cx+20,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,cy-20); ctx.lineTo(cx,cy+20); ctx.stroke();
+
+    pts.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<-1)p.x=101; if(p.x>101)p.x=-1;
+      if(p.y<-1)p.y=101; if(p.y>101)p.y=-1;
+      ctx.beginPath(); ctx.arc(p.x/100*W,p.y/100*H,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.g?GC+p.a+')':RC+p.a+')'; ctx.fill();
+    });
+
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+      const dx=(pts[i].x-pts[j].x)/100*W, dy=(pts[i].y-pts[j].y)/100*H;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<58){
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x/100*W, pts[i].y/100*H);
+        ctx.lineTo(pts[j].x/100*W, pts[j].y/100*H);
+        ctx.strokeStyle=RC+((.05*(1-dist/58)).toFixed(3))+')';
+        ctx.lineWidth=.3; ctx.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  };
+  draw();
+}
+
+/* ════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+════════════════════════════════════════ */
+function showShortcuts() {
+  document.getElementById('nv-shortcuts')?.classList.add('open');
+  document.getElementById('nv-shortcuts-backdrop')?.classList.add('open');
+}
+function hideShortcuts() {
+  document.getElementById('nv-shortcuts')?.classList.remove('open');
+  document.getElementById('nv-shortcuts-backdrop')?.classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  const tag = (document.activeElement?.tagName || '').toLowerCase();
+  if (['input','textarea','select'].includes(tag)) return;
+  switch (e.key) {
+    case 't': case 'T': e.preventDefault(); toggleTheme(); break;
+    case 'l': case 'L': e.preventDefault(); toggleLang(); break;
+    case '?':           e.preventDefault(); showShortcuts(); break;
+    case 'Escape':      hideShortcuts(); break;
+  }
+});
+
+/* ════════════════════════════════════════
+   EYE TOGGLES — fas prefix (FA6 correct)
+════════════════════════════════════════ */
+document.querySelectorAll('.fi-eye').forEach(btn => btn.addEventListener('click', () => {
+  const inp = document.getElementById(btn.dataset.f); if (!inp) return;
+  const show_ = inp.type === 'password';
+  inp.type = show_ ? 'text' : 'password';
+  const ico = btn.querySelector('i');
+  if (ico) ico.className = show_ ? 'fas fa-eye-slash' : 'fas fa-eye';
+}));
+
+/* ════════════════════════════════════════
+   PASSWORD STRENGTH
+════════════════════════════════════════ */
+let sc = 0;
+function calcStr(p) {
+  let s=0;
+  if(p.length>=8)s++; if(p.length>=12)s++;
+  if(/[A-Z]/.test(p))s++; if(/[a-z]/.test(p))s++;
+  if(/\d/.test(p))s++; if(/[^A-Za-z0-9]/.test(p))s++;
+  return s;
+}
+function renderStr() {
+  const fi=document.getElementById('strFi'), lb=document.getElementById('strLb');
+  if (!fi) return;
+  let pct=0, col='transparent', txt='';
+  if(sc>=1&&sc<=2){pct=25;col='#e6001a';txt=t('str_w');}
+  else if(sc===3)  {pct=50;col='#f07800';txt=t('str_f');}
+  else if(sc===4)  {pct=75;col='#c4b800';txt=t('str_g');}
+  else if(sc>=5)   {pct=100;col='#18c848';txt=t('str_s');}
+  fi.style.width=pct+'%'; fi.style.background=col;
+  if(lb){ lb.style.color=col; lb.textContent=txt; }
+}
+document.getElementById('rPwd')?.addEventListener('input', function(){ sc=calcStr(this.value); renderStr(); });
+
+/* clear errors on input */
+document.querySelectorAll('.fi input').forEach(inp => inp.addEventListener('input', () => {
+  inp.classList.remove('err');
+  const e = document.getElementById(inp.id+'Err'); if (e) e.textContent='';
+}));
+
+/* ════════════════════════════════════════
+   NAV SCROLL
+════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('lnav')?.classList.toggle('s', window.scrollY > 8);
+}, { passive:true });
+
+/* ════════════════════════════════════════
+   PANEL LINKS
+════════════════════════════════════════ */
+[['toReg','boxReg'],['toLogin','boxLogin'],['toForgot','boxFgt'],['backLogin','boxLogin']].forEach(([bid,box]) => {
+  const b = document.getElementById(bid);
+  if (b) b.addEventListener('click', e => { e.preventDefault(); show(box); });
+});
+
+/* lang/theme button events */
+document.getElementById('langBtn')?.addEventListener('click', toggleLang);
+document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
+
+/* ════════════════════════════════════════
+   VALIDATION
+════════════════════════════════════════ */
+const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const isPass  = p => p.length>=8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /\d/.test(p);
+
+/* ════════════════════════════════════════
+   API HELPER
+════════════════════════════════════════ */
+async function apiPost(ep, body) {
+  const tok = localStorage.getItem(K.TOKEN);
+  const r = await fetch(API+ep, {
+    method:'POST', credentials:'include',
+    headers:{'Content-Type':'application/json',...(tok?{'Authorization':'Bearer '+tok}:{})},
+    body:JSON.stringify(body),
+  });
+  return { ok:r.ok, data:await r.json().catch(()=>({})) };
+}
+function setLoad(btn,on){ if(btn){ btn.disabled=on; btn.style.opacity=on?'.55':''; } }
+
+/* ════════════════════════════════════════
+   SUCCESS
+════════════════════════════════════════ */
+function showSuccess(username) {
+  show('sucBox');
+  const sn = document.getElementById('sucName');
+  if (sn) sn.textContent = username || '';
+  document.getElementById('goBtn').onclick = () => location.replace('home.html');
+}
+
+/* ════════════════════════════════════════
+   LOGIN FORM
+════════════════════════════════════════ */
+document.getElementById('formLogin')?.addEventListener('submit', async e => {
+  e.preventDefault(); clearErrs();
+  const mail = document.getElementById('lMail').value.trim().toLowerCase();
+  const pwd  = document.getElementById('lPwd').value;
+  const rem  = document.getElementById('remMe').checked;
+  let ok=true;
+  if(!mail)           { setErr('lMailErr',t('e_fill')); ok=false; }
+  else if(!isEmail(mail)){ setErr('lMailErr',t('e_email')); ok=false; }
+  if(!pwd)            { setErr('lPwdErr',t('e_fill')); ok=false; }
+  if(!ok) return;
+  const btn = e.target.querySelector('.sbtn'); setLoad(btn,true);
+  try {
+    const {ok:aOk,data} = await apiPost('/auth/login',{email:mail,password:pwd});
+    if(aOk) {
+      if(data.token) localStorage.setItem(K.TOKEN,data.token);
+      const ad = {name:data.user?.username||mail,email:mail};
+      rem ? localStorage.setItem(K.AUTH,JSON.stringify(ad)) : sessionStorage.setItem(K.AUTH,JSON.stringify(ad));
+      showSuccess(ad.name);
+    } else setErr('lPwdErr', data.message || t('e_creds'));
+  } catch {
+    const users = JSON.parse(localStorage.getItem(K.USERS)||'[]');
+    const u = users.find(u=>u.email===mail&&u.password===pwd);
+    if(!u) { setErr('lPwdErr',t('e_creds')); }
+    else {
+      const ad={name:u.name,email:u.email};
+      rem ? localStorage.setItem(K.AUTH,JSON.stringify(ad)) : sessionStorage.setItem(K.AUTH,JSON.stringify(ad));
+      showSuccess(u.name);
+    }
+  } finally { setLoad(btn,false); }
+});
+
+/* ════════════════════════════════════════
+   REGISTER FORM
+════════════════════════════════════════ */
+document.getElementById('formReg')?.addEventListener('submit', async e => {
+  e.preventDefault(); clearErrs();
+  const name = document.getElementById('rName').value.trim();
+  const mail = document.getElementById('rMail').value.trim().toLowerCase();
+  const pwd  = document.getElementById('rPwd').value;
+  const con  = document.getElementById('rCon').value;
+  const agr  = document.getElementById('agreeChk').checked;
+  let ok=true;
+  if(!name)              { setErr('rNameErr',t('e_fill')); ok=false; }
+  if(!mail)              { setErr('rMailErr',t('e_fill')); ok=false; }
+  else if(!isEmail(mail)){ setErr('rMailErr',t('e_email')); ok=false; }
+  if(!pwd)               { setErr('rPwdErr',t('e_fill')); ok=false; }
+  else if(!isPass(pwd))  { setErr('rPwdErr',t('e_pass')); ok=false; }
+  if(pwd!==con)          { setErr('rConErr',t('e_match')); ok=false; }
+  if(!agr)               { toast('⚠️ '+t('e_terms'),'err'); ok=false; }
+  if(!ok) return;
+  const btn = e.target.querySelector('.sbtn'); setLoad(btn,true);
+  try {
+    const {ok:aOk,data} = await apiPost('/auth/register',{username:name,email:mail,password:pwd});
+    if(aOk) {
+      toast('✅ '+t('ok_created'),'ok');
+      e.target.reset(); sc=0; renderStr();
+      setTimeout(()=>show('boxLogin'),1500);
+    } else {
+      const m=data.message||'';
+      if(m.toLowerCase().includes('email')) setErr('rMailErr',t('e_taken'));
+      else toast('❌ '+m,'err');
+    }
+  } catch {
+    const users = JSON.parse(localStorage.getItem(K.USERS)||'[]');
+    if(users.find(u=>u.email===mail)){ setErr('rMailErr',t('e_taken')); setLoad(btn,false); return; }
+    users.push({name,email:mail,password:pwd});
+    localStorage.setItem(K.USERS,JSON.stringify(users));
+    toast('✅ '+t('ok_created'),'ok');
+    e.target.reset(); sc=0; renderStr();
+    setTimeout(()=>show('boxLogin'),1500);
+  } finally { setLoad(btn,false); }
+});
+
+/* ════════════════════════════════════════
+   FORGOT FORM
+════════════════════════════════════════ */
+document.getElementById('formFgt')?.addEventListener('submit', async e => {
+  e.preventDefault(); clearErrs();
+  const mail = document.getElementById('fMail').value.trim().toLowerCase();
+  if(!mail)           { setErr('fMailErr',t('e_fill')); return; }
+  if(!isEmail(mail))  { setErr('fMailErr',t('e_email')); return; }
+  const btn = e.target.querySelector('.sbtn'); setLoad(btn,true);
+  try { await apiPost('/auth/forgot-password',{email:mail}); } catch {}
+  finally {
+    toast('📧 '+t('ok_reset'),'ok');
+    e.target.reset();
+    setTimeout(()=>show('boxLogin'),2200);
+    setLoad(btn,false);
+  }
+});
+
+/* ════════════════════════════════════════
+   BOOT
+════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(theme, false);   /* no flash on initial load */
+  applyLang(false);           /* no slide on initial load */
+  startClock();
+  startCanvas();
+  setTimeout(() => document.getElementById('NVL')?.classList.add('gone'), 1900);
+
+  /* If already authenticated → go straight to success */
+  const eAuth = JSON.parse(localStorage.getItem(K.AUTH) || sessionStorage.getItem(K.AUTH) || 'null');
+  if (eAuth) showSuccess(eAuth.name || '');
+});
+</script>
+<script src="nv-sounds.js"></script>
+<script src="script.js"></script>
+
+<audio id="bgMusic" loop>
+  <source src="/Music/Login.mp3" type="audio/mpeg">
+</audio>
+<button id="musicToggle" class="nv-music-btn" aria-label="Toggle Music">
+  <i class="fas fa-music"></i>
+</button>
+</body>
+</html>
