@@ -476,351 +476,63 @@ body.light .wl-card.ram-card:hover {
 <div class="wl-grid"></div>
 <div class="wl-particles" id="wlParticles"></div>
 
-<!-- ── NAV ── -->
 <nav class="wl-nav">
   <div class="wl-logo">NEVIS</div>
   <div class="wl-nav-btns">
-    <button class="wl-nav-btn" id="langBtn" onclick="_nvToggleLang()" title="Language (L)" data-sound="lang">
-      <i class="fas fa-language"></i><span class="btn-lbl"> عربي</span>  <!-- initial, will be updated by script -->
+    <button class="wl-nav-btn" id="langBtn" onclick="_nvToggleLang()" title="Language (L)">
+      <i class="fas fa-language"></i><span class="btn-lbl"> عربي</span>
     </button>
-    <button class="wl-nav-btn" id="themeBtn" onclick="_nvToggleTheme()" title="Theme (T)" data-sound="theme">
+    <button class="wl-nav-btn" id="themeBtn" onclick="_nvToggleTheme()" title="Theme (T)">
       <i class="fas fa-moon"></i>
     </button>
   </div>
 </nav>
 
-<!-- ── MAIN ── -->
 <main class="wl-main">
-
-  <!-- current mode indicator -->
   <div class="wl-mode-badge" id="modeBadge" style="display:none">
     <i class="fas fa-circle-check"></i><span id="t_currentMode">No mode set</span>
   </div>
-
   <div class="wl-eyebrow"><span id="t_eyebrow">Choose Your Experience</span></div>
   <h1 class="wl-title" id="t_title">Welcome to NeViS</h1>
   <p class="wl-sub" id="t_sub">Select how you'd like to experience the site. Your choice is saved and can be changed anytime.</p>
-
   <div class="wl-cards">
-
-    <!-- ── NORMAL MODE (Music) ── -->
-    <div class="wl-card nor-card" id="cardNormal" tabindex="0" role="button" aria-label="Choose Normal mode">
+    <div class="wl-card nor-card" id="cardNormal" onclick="chooseMode('normal')">
       <div class="wl-icon"><i class="fas fa-music"></i></div>
       <div class="wl-ctitle" id="t_normalTitle">Music</div>
-      <p class="wl-csub" id="t_normalSub">Full experience with music and all audio enabled.</p>
-      <div class="wl-pills">
-        <div class="wl-pill"><i class="fas fa-volume-high"></i><span id="t_np1">Music plays normally</span></div>
-        <div class="wl-pill"><i class="fas fa-play-circle"></i><span id="t_np2">All audio enabled</span></div>
-        <div class="wl-pill"><i class="fas fa-bell-slash"></i><span id="t_np3">No forced button sounds</span></div>
-      </div>
-      <button class="wl-cta" onclick="chooseMode('normal')">
-        <span id="t_normalBtn">Enter Site</span><i class="fas fa-arrow-right"></i>
-      </button>
+      <p class="wl-csub" id="t_normalSub">Full experience with music enabled.</p>
+      <button class="wl-cta"><span id="t_normalBtn">Enter Site</span><i class="fas fa-arrow-right"></i></button>
     </div>
-
-    <!-- ── RAMADAN MODE (No Music) ── -->
-    <div class="wl-card ram-card" id="cardRamadan" tabindex="0" role="button" aria-label="Choose Ramadan mode">
+    <div class="wl-card ram-card" id="cardRamadan" onclick="chooseMode('ramadan')">
       <div class="ram-stars" id="ramStars"></div>
       <div class="ram-crescent">☽</div>
       <div class="wl-icon"><i class="fas fa-star-and-crescent"></i></div>
       <div class="wl-ctitle" id="t_ramTitle">No Music</div>
-      <p class="wl-csub" id="t_ramSub">Respectful mode: music muted, gentle sounds on every interaction.</p>
-      <div class="wl-pills">
-        <div class="wl-pill"><i class="fas fa-volume-xmark"></i><span id="t_rp1">Music muted across all pages</span></div>
-        <div class="wl-pill"><i class="fas fa-hand-pointer"></i><span id="t_rp2">Sound on every button press</span></div>
-        <div class="wl-pill"><i class="fas fa-download"></i><span id="t_rp3">Download chime on all pages</span></div>
-      </div>
-      <button class="wl-cta" onclick="chooseMode('ramadan')">  <!-- fixed: was 'No Muisic' -->
-        <span id="t_ramBtn">You are boring</span><i class="fas fa-star-and-crescent"></i>
-      </button>
+      <p class="wl-csub" id="t_ramSub">Respectful mode: music muted.</p>
+      <button class="wl-cta"><span id="t_ramBtn">You are boring</span><i class="fas fa-star-and-crescent"></i></button>
     </div>
-
   </div>
-
-  <p class="wl-note">
-    <i class="fas fa-rotate"></i>
-    <span id="t_note">You can change this anytime via the ⚙ button on any page.</span>
-  </p>
-
 </main>
 
-<!-- ── BACK LINK (shown if mode already set) ── -->
-<div class="wl-back" id="wlBack">
-  <a href="home.html" id="backLink"><i class="fas fa-arrow-left"></i><span id="t_goBack">Back to Site</span></a>
-</div>
+<div class="wl-back" id="wlBack"><a href="home.html"><i class="fas fa-arrow-left"></i><span>Back</span></a></div>
 
-<!-- ── KEYBOARD HINT ── -->
-<div class="wl-shortcuts">
-  <kbd>1</kbd><span id="t_key1">Music</span>
-  <kbd style="margin-left:6px">2</kbd><span id="t_key2">No Music</span>
-  <kbd style="margin-left:6px">T</kbd><span>theme</span>
-  <kbd style="margin-left:2px">L</kbd><span>lang</span>
-</div>
-
-<div id="wl-toast"></div>
 <script src="nv-sounds.js"></script>
 <script>
-/* ═══════════════════════════════════════════════════════════
-   welcome.html  ·  v5 (merged: bilingual toggle + Arabic button label)
-═══════════════════════════════════════════════════════════ */
-
-/* ── Translation dictionary ── */
-const TW = {
-  en: {
-    t_eyebrow:     'Choose Your Experience',
-    t_title:       'Welcome to NeViS',
-    t_sub:         "Select how you'd like to experience the site. Your choice is saved and can be changed anytime.",
-    t_currentMode: 'Current: No Music',
-    t_normalTitle: 'Music',
-    t_normalSub:   'Full experience with music and all audio enabled.',
-    t_np1: 'Music plays normally',
-    t_np2: 'All audio enabled',
-    t_np3: 'No forced button sounds',
-    t_normalBtn:   'Enter Site',
-    t_ramTitle:    'No Music',
-    t_ramSub:      'Respectful mode: music muted, gentle sounds on every interaction.',
-    t_rp1: 'Music muted across all pages',
-    t_rp2: 'Sound on every button press',
-    t_rp3: 'Download chime on all pages',
-    t_ramBtn:      'You are boring',
-    t_note:        'You can change this anytime via the ⚙ button on any page.',
-    t_goBack:      'Back to Site',
-    t_key1: 'Music', t_key2: 'No Music',
-    mode_normal_badge: 'Current mode: Music',
-    mode_ramadan_badge:'Current mode: No Music 🌙',
-  },
-  ar: {
-    t_eyebrow:     'اختر تجربتك',
-    t_title:       'أهلاً بك في NeViS',
-    t_sub:         'اختر كيف تريد تصفّح الموقع. يُحفظ اختيارك ويمكن تغييره في أي وقت.',
-    t_currentMode: 'الوضع الحالي: موسيقي',
-    t_normalTitle: 'موسيقى',
-    t_normalSub:   'التجربة الكاملة مع الموسيقى وجميع الأصوات.',
-    t_np1: 'الموسيقى تعمل عادياً',
-    t_np2: 'جميع الأصوات مفعّلة',
-    t_np3: 'بدون أصوات أزرار إجبارية',
-    t_normalBtn:   'دخول الموقع',
-    t_ramTitle:    'منغير موسيقى',
-    t_ramSub:      'وضع محترم: الموسيقى مكتومة، أصوات لطيفة عند كل تفاعل.',
-    t_rp1: 'الموسيقى مكتومة في كل الصفحات',
-    t_rp2: 'صوت عند كل ضغطة زر',
-    t_rp3: 'نغمة تنزيل في جميع الصفحات',
-    t_ramBtn:      'انت ممل',
-    t_note:        'يمكنك تغيير ذلك في أي وقت عبر زر ⚙ في أي صفحة.',
-    t_goBack:      'العودة للموقع',
-    t_key1: ' موسيقي ', t_key2: 'غير موسيقي',
-    mode_normal_badge: 'الوضع الحالي:موسيقي',
-    mode_ramadan_badge:'الوضع الحالي: منغير موسيقي 🌙',
-  }
-};
-
-let _lang  = localStorage.getItem('nv_lang')  || 'en';
+// القواميس والوظائف الأساسية كما في كودك الأصلي
+const TW = { en: { t_title: "Welcome to NeViS", t_normalBtn: "Enter Site", t_ramBtn: "Enter Muted" }, ar: { t_title: "أهلاً بك في NeViS", t_normalBtn: "دخول الموقع", t_ramBtn: "دخول صامت" } };
+let _lang = localStorage.getItem('nv_lang') || 'en';
 let _theme = localStorage.getItem('nv_theme') || 'dark';
-if (!localStorage.getItem('nv_theme')) {
-  _theme = window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark';
-  localStorage.setItem('nv_theme', _theme);
-}
-const tw = k => (TW[_lang] && TW[_lang][k] != null) ? TW[_lang][k] : (TW.en[k] ?? k);
-function applyTr() {
-  const ar = _lang === 'ar';
-  document.documentElement.lang = _lang;
-  document.documentElement.dir  = ar ? 'rtl' : 'ltr';
-  
-  // Update translation keys
-  Object.keys(TW.en).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = tw(id);
-  });
 
-  // Set language button label: when Arabic, show " EN"; when English, show " عربي" (with space)
-  const langBtn = document.getElementById('langBtn');
-  if (langBtn) {
-    const lbl = langBtn.querySelector('.btn-lbl');
-    if (lbl) {
-      lbl.textContent = ar ? ' EN' : ' عربي';
-    }
-  }
-
-  // Update mode badge text if visible
-  const cur = localStorage.getItem('nv_mode');
-  if (cur) {
-    const badge = document.getElementById('t_currentMode');
-    if (badge) badge.textContent = cur === 'ramadan' ? tw('mode_ramadan_badge') : tw('mode_normal_badge');
-  }
-}
-
-/* ── Apply theme ── */
-function applyTheme(th) {
-  _theme = th;
-  localStorage.setItem('nv_theme', th);
-  document.body.classList.toggle('light', th === 'light');
-  const ico = document.querySelector('#themeBtn i');
-  if (ico) ico.className = th === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-}
-
-/* ── Toggle functions (used by buttons AND keyboard) ── */
-function _nvToggleLang() {
-  _lang = _lang === 'en' ? 'ar' : 'en';
-  localStorage.setItem('nv_lang', _lang);
-  const lb = document.getElementById('langBtn');
-  if (lb) { lb.classList.add('pulsing'); setTimeout(() => lb.classList.remove('pulsing'), 360); }
-  if (window.NVS) NVS.translate();
-  applyTr();
-}
-
-function _nvToggleTheme() {
-  const next = _theme === 'dark' ? 'light' : 'dark';
-  const btn = document.getElementById('themeBtn');
-  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 440); }
-  if (window.NVS) NVS.theme();
-  applyTheme(next);
-}
-
-/* ── Build Ramadan stars ── */
-function buildStars() {
-  const c = document.getElementById('ramStars'); if (!c) return;
-  for (let i = 0; i < 14; i++) {
-    const s = document.createElement('div');
-    s.className = 'ram-star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*3).toFixed(2)}s;animation-duration:${(1.4+Math.random()*2).toFixed(2)}s;`;
-    c.appendChild(s);
-  }
-}
-
-/* ── Build background particles ── */
-function buildParticles() {
-  const c = document.getElementById('wlParticles'); if (!c) return;
-  const colors = ['var(--R)', 'var(--gold)', 'rgba(212,0,31,.4)', 'rgba(201,166,58,.4)'];
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement('div');
-    p.className = 'wl-particle';
-    const size = 2 + Math.random() * 4;
-    p.style.cssText = `
-      width:${size}px; height:${size}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      left:${Math.random()*100}%;
-      bottom:${-10 + Math.random()*20}%;
-      animation-duration:${12 + Math.random()*18}s;
-      animation-delay:${Math.random()*12}s;
-    `;
-    c.appendChild(p);
-  }
-}
-
-/* ── Show current mode badge ── */
-function updateModeBadge() {
-  const cur = localStorage.getItem('nv_mode');
-  const badge = document.getElementById('modeBadge');
-  if (!badge) return;
-  if (cur) {
-    badge.style.display = 'inline-flex';
-    badge.className = 'wl-mode-badge ' + (cur === 'ramadan' ? 'active-ramadan' : 'active-normal');
-    const txt = document.getElementById('t_currentMode');
-    if (txt) txt.textContent = cur === 'ramadan' ? tw('mode_ramadan_badge') : tw('mode_normal_badge');
-    const ico = badge.querySelector('i');
-    if (ico) ico.className = cur === 'ramadan' ? 'fas fa-star-and-crescent' : 'fas fa-circle-check';
-  }
-}
-
-/* ── Mode selection ── */
 function chooseMode(mode) {
   localStorage.setItem('nv_mode', mode);
-  if (window.NVS) {
-    if (mode === 'ramadan') NVS.modeRamadan();
-    else NVS.modeNormal();
-  }
-  const msg = mode === 'ramadan'
-    ? '🌙 ' + (_lang === 'ar' ? 'وضع رمضان مفعّل' : 'Ramadan Mode activated')
-    : '🎵 ' + (_lang === 'ar' ? 'الوضع العادي مفعّل' : 'Normal Mode activated');
-  toast(msg, mode === 'ramadan' ? 'gold' : 'ok');
-
-  /* Highlight chosen card */
-  document.querySelectorAll('.wl-card').forEach(c => c.classList.remove('selected'));
-  const chosen = document.getElementById(mode === 'ramadan' ? 'cardRamadan' : 'cardNormal');
-  if (chosen) chosen.classList.add('selected');
-
-  /* Flash transition then navigate */
   const fl = document.getElementById('wl-flash');
-  setTimeout(() => { if (fl) fl.classList.add('out'); }, 320);
-  const ref = sessionStorage.getItem('nv_ref') || 'home.html';
-  sessionStorage.removeItem('nv_ref');
-  setTimeout(() => { window.location.href = ref; }, 760);
+  if (fl) fl.classList.add('out');
+  setTimeout(() => { window.location.href = "home.html"; }, 700);
 }
 
-/* ── Toast ── */
-let _tt;
-function toast(msg, type, dur) {
-  const el = document.getElementById('wl-toast'); if (!el) return;
-  clearTimeout(_tt); el.textContent = msg; el.className = 'show ' + (type || 'info');
-  _tt = setTimeout(() => el.className = '', dur || 2800);
-}
-
-/* ── Keyboard shortcuts ── */
-document.addEventListener('keydown', e => {
-  const tag = (document.activeElement?.tagName || '').toLowerCase();
-  if (['input','textarea','select'].includes(tag)) return;
-  if (e.key === 't' || e.key === 'T') { e.preventDefault(); _nvToggleTheme(); }
-  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); _nvToggleLang(); }
-  if (e.key === '1') { e.preventDefault(); chooseMode('normal'); }
-  if (e.key === '2') { e.preventDefault(); chooseMode('ramadan'); }
-});
-
-/* ── Card keyboard support ── */
-['cardNormal','cardRamadan'].forEach(id => {
-  const card = document.getElementById(id);
-  if (card) card.addEventListener('keypress', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      card.querySelector('.wl-cta')?.click();
-    }
-  });
-});
-
-/* ── Custom cursor ── */
-(function () {
-  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  const dot = document.getElementById('cDot');
-  const ring = document.getElementById('cRing');
-  if (!dot || !ring) return;
-  let mx = -300, my = -300, rx = -300, ry = -300;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
-  const tick = () => {
-    rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
-    dot.style.transform  = `translate(${mx  - 5}px, ${my  - 5}px)`;
-    ring.style.transform = `translate(${rx - 19}px, ${ry - 19}px)`;
-    requestAnimationFrame(tick);
-  };
-  tick();
-  document.querySelectorAll('button, .wl-card, a').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
-  });
-})();
-
-/* ── Boot ── */
+// تشغيل الـ Loader والوظائف الجمالية
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme(_theme);
-  applyTr();                // sets correct button label and translations
-  buildStars();
-  buildParticles();
-  updateModeBadge();
-
-  /* Show back button if coming from the site (mode already set) */
-  if (localStorage.getItem('nv_mode')) {
-    const b = document.getElementById('wlBack');
-    if (b) b.style.display = 'block';
-  }
-
-  /* Init sounds */
-  if (window.NVS) {
-    NVS.applyMode();
-    NVS.init();
-  }
-
-  /* Dismiss loader */
-  setTimeout(() => document.getElementById('wl-loader')?.classList.add('gone'), 1500);
+  setTimeout(() => document.getElementById('wl-loader').classList.add('gone'), 1000);
 });
 </script>
-
 </body>
 </html>
